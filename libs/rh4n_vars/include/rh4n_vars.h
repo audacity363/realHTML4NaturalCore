@@ -68,6 +68,7 @@ int rh4nvarGetRef(RH4nVarList*, char*, char*, RH4nVarRef*);
 int rh4nvarGetRef_m(RH4nVarList*, char**, char*, RH4nVarRef*);
 int rh4nvarExist(RH4nVarList*, char*, char*);
 int rh4nvarGroupExist(RH4nVarList*, char*);
+int rh4nvarGroupExist_m(RH4nVarList*, char**, char*);
 int rh4nvarGetVarType(RH4nVarList*, char*, char*, int*);
 //String
 int rh4nvarCreateNewString(RH4nVarList*, char*, char*, char*);
@@ -79,7 +80,7 @@ int rh4nvarCreateNewStringArray(RH4nVarList*, char*, char*, int, int*);
 int rh4nvarCreateNewStringArray_m(RH4nVarList*, char**, char*, int, int*);
 int rh4nvarGetStringArrayEntry(RH4nVarList*, char*, char*, int*, int, char*);
 int rh4nvarSetStringArrayEntry(RH4nVarList*, char*, char*, int*, char*);
-int rh4nvarSetStringArrayEntry_m(RH4nVarList*, char**, char*, int*, char*);
+int rh4nvarSetStringArrayEntry_m(RH4nVarList*, const char**, const char*, int*, char*);
 int rh4nvarGetStringLengthArrayEntry(RH4nVarList*, char*, char*, int*, int*);
 //UString
 int rh4nvarCreateNewUString(RH4nVarList*, char*, char*, wchar_t*);
@@ -89,7 +90,7 @@ int rh4nvarEditUString(RH4nVarList*, char*, char*, wchar_t*);
 int rh4nvarCreateNewUStringArray(RH4nVarList*, char*, char*, int, int*);
 int rh4nvarGetUStringArrayEntry(RH4nVarList*, char*, char*, int*, int, wchar_t*);
 int rh4nvarSetUStringArrayEntry(RH4nVarList*, char*, char*, int*, wchar_t*);
-int rh4nvarSetUStringArrayEntry_m(RH4nVarList*, char**, char*, int*, wchar_t*);
+int rh4nvarSetUStringArrayEntry_m(RH4nVarList*, const char**, const char*, int*, wchar_t*);
 int rh4nvarGetUStringLengthArrayEntry(RH4nVarList*, char*, char*, int*, int*);
 //Bool
 int rh4nvarCreateNewBool(RH4nVarList*, char*, char*, bool);
@@ -100,7 +101,7 @@ int rh4nvarGetBool(RH4nVarList*, char*, char*, bool*);
 int rh4nvarCreateNewBoolArray(RH4nVarList*, char*, char*, int, int*);
 int rh4nvarCreateNewBoolArray_m(RH4nVarList*, char**, char*, int, int*);
 int rh4nvarSetBoolArrayEntry(RH4nVarList*, char*, char*, int*, bool);
-int rh4nvarSetBoolArrayEntry_m(RH4nVarList*, char**, char*, int*, bool);
+int rh4nvarSetBoolArrayEntry_m(RH4nVarList*, const char**, const char*, int*, bool);
 int rh4nvarGetBoolArrayEntry(RH4nVarList*, char*, char*, int*, bool*);
 //Integer
 int rh4nvarCreateNewInt(RH4nVarList*, char*, char*, int);
@@ -111,7 +112,7 @@ int rh4nvarGetInt(RH4nVarList*, char*, char*, int*);
 int rh4nvarCreateNewIntArray(RH4nVarList*, char*, char*, int, int*);
 int rh4nvarCreateNewIntArray_m(RH4nVarList*, char**, char*, int, int*);
 int rh4nvarSetIntArrayEntry(RH4nVarList*, char*, char*, int*, int);
-int rh4nvarSetIntArrayEntry_m(RH4nVarList*, char**, char*, int*, int);
+int rh4nvarSetIntArrayEntry_m(RH4nVarList*, const char**, const char*, int*, int);
 int rh4nvarGetIntArrayEntry(RH4nVarList*, char*, char*, int*, int*);
 //Float
 int rh4nvarCreateNewFloat(RH4nVarList*, char*, char*, double);
@@ -122,7 +123,7 @@ int rh4nvarGetFloat(RH4nVarList*, char*, char*, double*);
 int rh4nvarCreateNewFloatArray(RH4nVarList*, char*, char*, int, int*);
 int rh4nvarCreateNewFloatArray_m(RH4nVarList*, char**, char*, int, int*);
 int rh4nvarSetFloatArrayEntry(RH4nVarList*, char*, char*, int*, double);
-int rh4nvarSetFloatArrayEntry_m(RH4nVarList*, char**, char*, int*, double);
+int rh4nvarSetFloatArrayEntry_m(RH4nVarList*, const char**, const char*, int*, double);
 int rh4nvarGetFloatArrayEntry(RH4nVarList*, char*, char*, int*, double*);
 //Group
 int rh4nvarCreateNewGroup(RH4nVarList*, char*);
@@ -168,6 +169,7 @@ int rh4nvarGetArrayLength(RH4nVarObj*, int*);
 int rh4nvarGetArrayDimension(RH4nVarObj*, int*);
 int rh4nvarGetArrayEntry(RH4nVarObj*, int[3], RH4nVarObj**);
 int _rh4nvarExpandArray(RH4nVarObj*, int, int, int*, int);
+int rh4nvarSetArrayEntry_m(RH4nVarList*, const char**, const char*, int[3], void*);
 //Free
 void rh4nvarFreeArray(RH4nVarEntry_t*);
 void rh4nvarFreeFork(RH4nVarEntry_t*);

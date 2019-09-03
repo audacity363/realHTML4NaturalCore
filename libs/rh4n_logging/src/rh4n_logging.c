@@ -5,6 +5,7 @@
 #include <string.h>
 #include <errno.h>
 #include <unistd.h>
+#include <sys/time.h>
 
 #include "rh4n_logging.h"
 
@@ -99,10 +100,10 @@ void rh4n_log(RH4nLogrule *rule, int level,
     pid = getpid();
 
     if(rule->level == RH4N_DEVELOP) {
-        snprintf(logprefix, MAX_PREFIX_LEN, "%s.%06d [%-8s->%-8s@%d] %-7s (%s@%s:%ld) - ", datetime_buff, millis.tv_usec, 
+        snprintf(logprefix, MAX_PREFIX_LEN, "%s.%06ld [%-8s->%-8s@%d] %-7s (%s@%s:%ld) - ", datetime_buff, millis.tv_usec, 
             rule->nat_library, rule->nat_program, pid, level_str, func, file, line);
     } else {
-        snprintf(logprefix, MAX_PREFIX_LEN, "%s.%06d [%-8s->%-8s@%d] %-7s - ", datetime_buff, millis.tv_usec, 
+        snprintf(logprefix, MAX_PREFIX_LEN, "%s.%06ld [%-8s->%-8s@%d] %-7s - ", datetime_buff, millis.tv_usec, 
             rule->nat_library, rule->nat_program, pid, level_str);
     }
 
