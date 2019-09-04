@@ -34,7 +34,7 @@ int rh4nvarMoveVarToGroup(RH4nVarList *varlist, char *pvarname, char *pgroupname
 int rh4nvarMoveVarToGroup_m(RH4nVarList *varlist, char *pvarname, char **pgroupnames) {
     RH4nVarRef _refgrp = RH4NVAR_REF_INIT, _refvar = RH4NVAR_REF_INIT;
     RH4nVarEntry_t *forkanker = NULL;
-    int i = 0, x = 0, varlibret = 0;
+    int i = 0, varlibret = 0;
 
     forkanker = varlist->anker;
 

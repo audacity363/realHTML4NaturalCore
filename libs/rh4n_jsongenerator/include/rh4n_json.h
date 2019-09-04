@@ -27,7 +27,7 @@ void rh4njsonpregetCommonDimension(RH4nVarEntry_t *target, int length[3], int ma
 void rh4njsoncheckCommonDimension(int curlength[3], int length[3], int dimOK[3]);
 void rh4njsonMergeCommonDimResults(int[3], int[3], int[3], int[3], RH4nProperties*);
 int rh4njsongetCommonDimension(int[3]); 
-int rh4njsonPrintObjectArrayEntry(RH4nVarEntry_t*, FILE*, int, RH4nJSONObjectArrayParms_t, RH4nProperties*);
+void rh4njsonPrintObjectArrayEntry(RH4nVarEntry_t*, FILE*, int, RH4nJSONObjectArrayParms_t, RH4nProperties*);
 
 #ifdef __cplusplus
 }

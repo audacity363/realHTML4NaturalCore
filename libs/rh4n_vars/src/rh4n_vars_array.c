@@ -171,8 +171,7 @@ int rh4nvarGetArrayDimension(RH4nVarObj *target, int *dimensions) {
 
 int rh4nvarGetArrayVarType(RH4nVarList *varlist, char *pgroupname, char *pname, int *vartype) {
     RH4nVarRef _refvar = RH4NVAR_REF_INIT;
-    RH4nVarObj *arrayentry = NULL;
-    int rc = 0, dimensions = 0, index[3] = { -1, -1, -1 };
+    int rc = 0;
 
     if((rc = rh4nvarGetRef(varlist, pgroupname, pname, &_refvar)) != RH4N_RET_OK) return(rc);
     *vartype = _refvar.var->var.array_type;
@@ -180,10 +179,8 @@ int rh4nvarGetArrayVarType(RH4nVarList *varlist, char *pgroupname, char *pname, 
 }
 
 int rh4nvarExpandArray(RH4nVarList *varlist, char *pgroupname, char *pname, int dimensions, int length[3]) {
-    int varlibret = 0, i = 0, x = 0, current_dimensions = 0, index[3] = {-1, -1, -1},
-        current_length[3] = {-1, -1, -1};
+    int varlibret = 0, current_dimensions = 0;
     RH4nVarRef _refvar = RH4NVAR_REF_INIT;
-    RH4nVarObj *ytarget = NULL, *ztarget = NULL;
 
     if(dimensions < 1 && dimensions > 3) { return(RH4N_RET_VAR_BAD_DIM); }
     if((varlibret = rh4nvarCheckDimLength(dimensions, length)) != RH4N_RET_OK) { return(varlibret); }

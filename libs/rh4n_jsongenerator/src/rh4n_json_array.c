@@ -46,7 +46,7 @@ void rh4njsonPrintJSONArray(RH4nVarObj *target, FILE *outputfile, RH4nProperties
 }
 
 void rh4njsonPrintJSONObjectArray(RH4nVarEntry_t *target, FILE *outputfile, RH4nProperties *props) {
-    int commonDim = 0, dimOK[3] = {-1, -1, -1};
+    int dimOK[3] = {-1, -1, -1};
     RH4nJSONObjectArrayParms_t args = {
             -1, 
             {-1, -1, -1},
@@ -64,9 +64,9 @@ void rh4njsonPrintJSONObjectArray(RH4nVarEntry_t *target, FILE *outputfile, RH4n
     fwprintf(outputfile, L"]");
 }
 
-int rh4njsonPrintJSONSubArray(RH4nVarEntry_t *target, FILE *outputfile, int curdim, RH4nJSONObjectArrayParms_t args, 
+void rh4njsonPrintJSONSubArray(RH4nVarEntry_t *target, FILE *outputfile, int curdim, RH4nJSONObjectArrayParms_t args, 
   RH4nProperties *props) {
-    int commonDim = 0, dimOK[3] = {-1, -1, -1};
+    int dimOK[3] = {-1, -1, -1};
     RH4nJSONObjectArrayParms_t args_new = {
             -1, 
             {-1, -1, -1},
@@ -87,12 +87,10 @@ int rh4njsonPrintJSONSubArray(RH4nVarEntry_t *target, FILE *outputfile, int curd
     fwprintf(outputfile, L"[");
     rh4njsonPrintObjectArrayEntry(target, outputfile, curdim+1, args_new, props);
     fwprintf(outputfile, L"]");
-
-
 }
 
 
-int rh4njsonPrintObjectArrayEntry(RH4nVarEntry_t *target, FILE *outputfile, int curdim, RH4nJSONObjectArrayParms_t args, RH4nProperties *props) {
+void rh4njsonPrintObjectArrayEntry(RH4nVarEntry_t *target, FILE *outputfile, int curdim, RH4nJSONObjectArrayParms_t args, RH4nProperties *props) {
     RH4nVarEntry_t *hptr = target;
     RH4nVarObj *arrentry = NULL;
     int i = 0, varlibret = 0, arraydims = 0, loopgoal = 0;
@@ -121,7 +119,7 @@ int rh4njsonPrintObjectArrayEntry(RH4nVarEntry_t *target, FILE *outputfile, int 
             if(hptr->var.type == RH4NVARTYPEGROUP) {
                 args.length[curdim] = -2;
                 if(rh4njsonCountGroups(hptr->nextlvl, props) == 0 && rh4njsonCheckIfJSONArray(hptr->nextlvl, props, 1) == true) {
-rh4njsonPrintJSONSubArray(hptr->nextlvl, outputfile, curdim, args, props);
+                    rh4njsonPrintJSONSubArray(hptr->nextlvl, outputfile, curdim, args, props);
                 } else {
                     rh4njsonPrintObjectArrayEntry(hptr->nextlvl, outputfile, curdim+1, args, props);
                 }
@@ -132,10 +130,12 @@ rh4njsonPrintJSONSubArray(hptr->nextlvl, outputfile, curdim, args, props);
             rh4nvarGetArrayDimension(&hptr->var, &arraydims);
 
             rh4n_log_develop(props->logging, "Printing %s with index X: %d Y: %d Z: %d", hptr->name, args.index[0], args.index[1], args.index[2]);
+            //What to do with the return code? Every funtion in the stack above is a void function?! This is the only time a error could happen
             if((varlibret = rh4nvarGetArrayEntry(&hptr->var, args.index, &arrentry)) != RH4N_RET_OK) {
+                //For now: Just ignore it
                 rh4n_log_error(props->logging, "Could not get entry (%d, %d, %d) from %s. Varlib return: %d", 
                     args.index[0], args.index[1], args.index[2], hptr->name, varlibret);
-                return(varlibret);
+                continue;
             }
             switch(arrentry->type) {
                 case RH4NVARTYPEARRAY:
@@ -150,7 +150,6 @@ rh4njsonPrintJSONSubArray(hptr->nextlvl, outputfile, curdim, args, props);
         fwprintf(outputfile, L"}");
         if(i+1 < args.length[curdim-1]) { fwprintf(outputfile, L","); }
     }
-
 }
 
 int rh4njsongetCommonDimension(int dimOK[3]) {
