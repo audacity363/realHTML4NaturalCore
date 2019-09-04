@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include <unistd.h>
 #include <string.h>
 #include <fcntl.h>
 
@@ -131,7 +132,7 @@ int rh4nUtilsLoadProperties(char *filename, RH4nProperties *props) {
         props->logpath = malloc(i_tmp);
         memset(props->logpath, 0x00, i_tmp);
         RH4N_UTILS_READ(inputfile, props->logpath, i_tmp, ret);
-    } else { props->logpath; }
+    } else { props->logpath = NULL; }
 	
     RH4N_UTILS_READ(inputfile, props->errorrepresentation, sizeof(props->errorrepresentation), ret);
 	
@@ -143,7 +144,7 @@ int rh4nUtilsLoadProperties(char *filename, RH4nProperties *props) {
     return(RH4N_RET_OK);
 }
 
-int rh4nUtilsPrintProperties(RH4nProperties *props) {
+void rh4nUtilsPrintProperties(RH4nProperties *props) {
     printf("-------------------------------------------------------------------\n");
     printf("NatLibrary.........: [%s]\n", props->natlibrary);
     printf("NatProgram.........: [%s]\n", props->natprogram);

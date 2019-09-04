@@ -7,7 +7,6 @@ AR = /usr/bin/ar
 #LFLAGS2_SO = 
 
 #GCC:
-LFLAGS1_SO = -shared -Wl,--no-undefined
 LFLAGS1_SO = -shared 
 LFLAGS2_SO = 
 
@@ -19,10 +18,11 @@ INCLUDE = -I./include/ \
 		  -I./libs/rh4n_ldaparser/include/ \
 		  -I./libs/rh4n_var2name/include/ \
 		  -I./natuser/include/ \
+		  -I./natcaller/include/
 
 LIBS = -L./bin/libs \
-	   -ldl -lrh4nutils -lrh4nlogging -lrh4nvar2name -lrh4nvars -lrh4nldaparser \
-	   -lrh4njsongenerator
+	   -lrh4nutils -lrh4nlogging -lrh4nvar2name -lrh4nvars -lrh4nldaparser \
+	   -lrh4njsongenerator -ldl
 
 #XLC:
 #CARGS1 = -g -c -fpic $(INCLUDE)
@@ -30,7 +30,7 @@ LIBS = -L./bin/libs \
 #CARGS_SO = -c -g -fpic $(INCLUDE)
 
 #GCC:
-CARGS1 = -g -c -fpic $(INCLUDE)
+CARGS1 = -g -c -Wall -fpic $(INCLUDE)
 CARGS2 = 
 CARGS_SO = -c -g -fpic $(INCLUDE)
 
@@ -58,12 +58,15 @@ help:
 	@printf "\t|   Name and Postion matching library (./libs/rh4n_var2name) |\n"
 	@printf "\t|                                                            |\n"
 	@printf "\t| natuserlib                                                 |\n"
-	@printf "\t|   Shared library for natural (./natuser_lib)               |\n"
+	@printf "\t|   Shared library for natural (./natuserlib)                |\n"
+	@printf "\t|                                                            |\n"
+	@printf "\t| natcaller                                                  |\n"
+	@printf "\t|   Binary that calls natural (bug from Nat >8) (./natcaller)|\n"
 	@printf "\t+------------------------------------------------------------+\n\n"
 	@printf "\tall: Compiles everything\n"
 
 
-all: utils logging vars var2name ldaparser natuserlib 
+all: utils logging vars var2name ldaparser natuserlib natcaller
 	@printf "You find the binarys under ./bin\n"
 
 #                         +------------------+
@@ -72,7 +75,8 @@ all: utils logging vars var2name ldaparser natuserlib
 
 UTILS_SRC = ./libs/rh4n_utils/src
 UTILS_BIN = ./bin/rh4n_utils
-UTILS_OBJS = rh4n_utils.o
+UTILS_OBJS = rh4n_utils.o \
+			 rh4n_utils_prop.o
 UTILS_LIB = librh4nutils.a
 
 utils: utils_clean utils_pre $(UTILS_OBJS)
@@ -327,7 +331,7 @@ NATUSER_BIN = ./bin/natuserlib
 natuserlib: utils logging vars json_generator ldaparser var2name natuserlib_clean natuserlib_pre \
 			$(NATUSER_OBJS) $(NATUSER_READOUT_OBJS) $(NATUSER_PUTVAR_OBJS)
 	@printf "Linking librealHTML4Natural.so\n"
-	$(CC) $(LFLAGS1_SO) $(NATUSER_BIN)/*.o $(LIBS) $(LFLAGS2_SO) -o ./bin/librealHTML4Natural.so
+	@$(CC) $(LFLAGS1_SO) $(NATUSER_BIN)/*.o $(LIBS) $(LFLAGS2_SO) -o ./bin/librealHTML4Natural.so
 	@printf "Done compiling and linking natuserlib\n"
 
 nat_test: natuserlib
@@ -360,3 +364,34 @@ natuserlib_clean:
 	@printf "Cleaning natuser objects\n"
 	@rm -f $(NATUSER_BIN)/*.o
 	@rm -f ./bin/librealHTML4Natural.so
+
+
+
+#                         +-----------------+
+#-------------------------|   Natuser lib   |----------------------------------
+#                         +-----------------+
+
+NATCALLER_OBJS = rh4n_natcaller_main.o \
+				 rh4n_natcaller_errorhandling.o \
+				 rh4n_natcaller_parmgeneration.o \
+				 rh4n_natcaller_process.o
+
+NATCALLER_SRC = ./natcaller/src
+NATCALLER_BIN = ./bin/natcaller
+
+natcaller: utils logging vars natcaller_clean natcaller_pre $(NATCALLER_OBJS)
+	@printf "Linking Natcaller\n"
+	@$(CC) -o ./bin/realHTML4NaturalNatCaller $(NATCALLER_BIN)/*.o $(LIBS)
+
+$(NATCALLER_OBJS):
+	@printf "CC $(NATCALLER_SRC)/$*.c => $(NATCALLER_BIN)/$*.o\n"
+	@$(CC) $(CARGS_SO) -o $(NATCALLER_BIN)/$*.o $(NATCALLER_SRC)/$*.c
+
+natcaller_clean:
+	@printf "Cleaning natcaller objects\n"
+	@rm -f $(NATCALLER_BIN)/*.o
+	@rm -f ./bin/realHTML4NaturalNatCaller
+
+natcaller_pre:
+	@printf "Creating natcaller output folder\n"
+	@mkdir -p $(NATCALLER_BIN)

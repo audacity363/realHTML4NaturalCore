@@ -23,7 +23,7 @@ pnni_611_functions rh4nUtilsgetNNIFunctions(RH4nProperties*, void*, char*);
 
 int rh4nUtilsDumpProperties(char *filename, RH4nProperties *props);
 int rh4nUtilsLoadProperties(char *filename, RH4nProperties *props);
-int rh4nUtilsPrintProperties(RH4nProperties *props);
+void rh4nUtilsPrintProperties(RH4nProperties *props);
 void rh4nUtilsFreeProperties(RH4nProperties *props);
 #endif
 
