@@ -31,6 +31,8 @@ LIBS = -L./bin/libs \
 
 #GCC:
 CARGS1 = -g -c -Wall -fpic $(INCLUDE)
+#Save preprocessor and assembly files 
+#CARGS1 = -g -c -Wall -fpic $(INCLUDE) -save-temps=obj
 CARGS2 = 
 CARGS_SO = -c -g -fpic $(INCLUDE)
 
@@ -144,7 +146,6 @@ VARS_OBJS = rh4n_vars.o \
 		    rh4n_vars_integer.o \
 		    rh4n_vars_float.o \
 		    rh4n_vars_ustring.o \
-		    rh4n_vars_printjson.o \
 		    rh4n_vars_free.o \
 			rh4n_vars_dump.o \
 			rh4n_vars_load.o

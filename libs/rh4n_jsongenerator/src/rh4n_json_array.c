@@ -1,7 +1,10 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include <unistd.h>
+#include <sys/types.h>
+#include <sys/stat.h>
+#include <sys/fcntl.h>
 #include <string.h>
-#include <wchar.h>
 #include <errno.h>
 
 #include "rh4n.h"
@@ -28,11 +31,11 @@ bool rh4njsonCheckIfJSONArray(RH4nVarEntry_t *target, RH4nProperties *props, sho
     return(true);
 }
 
-void rh4njsonPrintJSONArray(RH4nVarObj *target, FILE *outputfile, RH4nProperties *props) {
+void rh4njsonPrintJSONArray(RH4nVarObj *target, int outputfile, RH4nProperties *props) {
     RH4nVarObj *hptr = NULL;
     int i = 0;
-   
-    fwprintf(outputfile, L"[") ;
+
+    RH4NJSON_PRINTARRAYOPEN(outputfile);
     for(; i < target->length; i++) {
         hptr = &((RH4nVarObj*)target->value)[i];
         if(hptr->type == RH4NVARTYPEARRAY) {
@@ -40,12 +43,12 @@ void rh4njsonPrintJSONArray(RH4nVarObj *target, FILE *outputfile, RH4nProperties
         } else {
             rh4nvarPrintVar(hptr, props, outputfile); 
         }
-        if(i+1 < target->length) { fwprintf(outputfile, L","); }
+        if(i+1 < target->length) { write(outputfile, ",", 1); }
     }
-    fwprintf(outputfile, L"]") ;
+    RH4NJSON_PRINTARRAYCLOSE(outputfile);
 }
 
-void rh4njsonPrintJSONObjectArray(RH4nVarEntry_t *target, FILE *outputfile, RH4nProperties *props) {
+void rh4njsonPrintJSONObjectArray(RH4nVarEntry_t *target, int outputfile, RH4nProperties *props) {
     int dimOK[3] = {-1, -1, -1};
     RH4nJSONObjectArrayParms_t args = {
             -1, 
@@ -59,12 +62,12 @@ void rh4njsonPrintJSONObjectArray(RH4nVarEntry_t *target, FILE *outputfile, RH4n
     rh4n_log_develop(props->logging, "Found the common dimension %d", args.aimdim);
     rh4n_log_develop(props->logging, "Length of all arrays: %d, %d, %d", args.length[0], args.length[1], args.length[2]);
     rh4n_log_develop(props->logging, "Start generating array with objects");
-    fwprintf(outputfile, L"[");
+    RH4NJSON_PRINTARRAYOPEN(outputfile);
     rh4njsonPrintObjectArrayEntry(target, outputfile, 1, args, props);
-    fwprintf(outputfile, L"]");
+    RH4NJSON_PRINTARRAYCLOSE(outputfile);
 }
 
-void rh4njsonPrintJSONSubArray(RH4nVarEntry_t *target, FILE *outputfile, int curdim, RH4nJSONObjectArrayParms_t args, 
+void rh4njsonPrintJSONSubArray(RH4nVarEntry_t *target, int outputfile, int curdim, RH4nJSONObjectArrayParms_t args, 
   RH4nProperties *props) {
     int dimOK[3] = {-1, -1, -1};
     RH4nJSONObjectArrayParms_t args_new = {
@@ -78,19 +81,18 @@ void rh4njsonPrintJSONSubArray(RH4nVarEntry_t *target, FILE *outputfile, int cur
     rh4njsonpregetCommonDimension(target, args_new.length, dimOK, props);
     args_new.aimdim = rh4njsongetCommonDimension(dimOK);
 
-    //memmove(args_new.length+1, args.length, sizeof(int)*2);
     args_new.index[0] = args.index[0];
     rh4n_log_develop(props->logging, "Found the common dimension %d", args_new.aimdim);
     rh4n_log_develop(props->logging, "Length of all arrays: %d, %d, %d", args_new.length[0], args_new.length[1], args_new.length[2]);
     rh4n_log_develop(props->logging, "Start generating array with objects");
 
-    fwprintf(outputfile, L"[");
+    RH4NJSON_PRINTARRAYOPEN(outputfile);
     rh4njsonPrintObjectArrayEntry(target, outputfile, curdim+1, args_new, props);
-    fwprintf(outputfile, L"]");
+    RH4NJSON_PRINTARRAYOPEN(outputfile);
 }
 
 
-void rh4njsonPrintObjectArrayEntry(RH4nVarEntry_t *target, FILE *outputfile, int curdim, RH4nJSONObjectArrayParms_t args, RH4nProperties *props) {
+void rh4njsonPrintObjectArrayEntry(RH4nVarEntry_t *target, int outputfile, int curdim, RH4nJSONObjectArrayParms_t args, RH4nProperties *props) {
     RH4nVarEntry_t *hptr = target;
     RH4nVarObj *arrentry = NULL;
     int i = 0, varlibret = 0, arraydims = 0, loopgoal = 0;
@@ -107,15 +109,15 @@ void rh4njsonPrintObjectArrayEntry(RH4nVarEntry_t *target, FILE *outputfile, int
         }
 
         if(curdim < args.aimdim) {
-            fwprintf(outputfile, L"[");
+            RH4NJSON_PRINTOBJECTOPEN(outputfile);
             rh4njsonPrintObjectArrayEntry(hptr, outputfile, curdim+1, args, props);
-            fwprintf(outputfile, L"]");
-            if(i+1 < args.length[curdim-1]) { fwprintf(outputfile, L","); }
+            RH4NJSON_PRINTOBJECTCLOSE(outputfile);
+            if(i+1 < args.length[curdim-1]) { write(outputfile, ",", 1); }
             continue;
         }
-        fwprintf(outputfile, L"{");
+        RH4NJSON_PRINTOBJECTOPEN(outputfile);
         for(hptr = target; hptr != NULL; hptr = hptr->next) {
-            fwprintf(outputfile, L"\"%s\":", hptr->name);
+            RH4NJSON_PRINTNAME(outputfile, hptr->name);
             if(hptr->var.type == RH4NVARTYPEGROUP) {
                 args.length[curdim] = -2;
                 if(rh4njsonCountGroups(hptr->nextlvl, props) == 0 && rh4njsonCheckIfJSONArray(hptr->nextlvl, props, 1) == true) {
@@ -123,7 +125,7 @@ void rh4njsonPrintObjectArrayEntry(RH4nVarEntry_t *target, FILE *outputfile, int
                 } else {
                     rh4njsonPrintObjectArrayEntry(hptr->nextlvl, outputfile, curdim+1, args, props);
                 }
-                if(hptr->next != NULL) { fwprintf(outputfile, L","); }
+                if(hptr->next != NULL) { write(outputfile, ",", 1); }
                 continue;
             } 
             
@@ -144,11 +146,11 @@ void rh4njsonPrintObjectArrayEntry(RH4nVarEntry_t *target, FILE *outputfile, int
                 default:
                     rh4nvarPrintVar(arrentry, props, outputfile);
             }
-            if(hptr->next != NULL) { fwprintf(outputfile, L","); }
+            if(hptr->next != NULL) { write(outputfile, ",", 1); }
 
         }
-        fwprintf(outputfile, L"}");
-        if(i+1 < args.length[curdim-1]) { fwprintf(outputfile, L","); }
+        RH4NJSON_PRINTOBJECTCLOSE(outputfile);
+        if(i+1 < args.length[curdim-1]) { write(outputfile, ",", 1);  }
     }
 }
 

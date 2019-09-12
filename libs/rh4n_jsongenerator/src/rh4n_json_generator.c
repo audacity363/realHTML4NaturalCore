@@ -1,29 +1,34 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include <unistd.h>
+#include <sys/types.h>
+#include <sys/stat.h>
+#include <sys/fcntl.h>
 #include <string.h>
-#include <wchar.h>
 #include <errno.h>
 
 #include "rh4n.h"
 #include "rh4n_json.h"
 
 int rh4njsonPrintJSONToFile(RH4nVarList *varlist, char *filename, RH4nProperties *props) {
-    FILE *outputfile = NULL;
-    if((outputfile = fopen(filename, "w")) == NULL) {
+    int outputfile = 0;
+
+    if((outputfile = open(filename, O_NOFOLLOW | O_TRUNC, O_WRONLY)) < 0) {
         rh4n_log_error(props->logging, "Could not open [%s] => %s", filename, strerror(errno));
         return(RH4N_RET_INTERNAL_ERR);
     }
+
     rh4n_log_develop(props->logging, "Successfully opened [%s]", filename);
     rh4njsonPrintJSON(varlist, outputfile, props);
-    fclose(outputfile);
+    close(outputfile);
     return(RH4N_RET_OK);
 }
 
-void rh4njsonPrintJSON(RH4nVarList *varlist, FILE *outputfile, RH4nProperties *props) {
+void rh4njsonPrintJSON(RH4nVarList *varlist, int outputfile, RH4nProperties *props) {
     rh4njsonPrintObject(varlist->anker, outputfile, 0, props);
 }
 
-void rh4njsonPrintObject(RH4nVarEntry_t *anker, FILE *outputfile, int level, RH4nProperties *props) {
+void rh4njsonPrintObject(RH4nVarEntry_t *anker, int outputfile, int level, RH4nProperties *props) {
     RH4nVarEntry_t *hptr = NULL;
     int groups_found = 0;
 
@@ -59,10 +64,10 @@ void rh4njsonPrintObject(RH4nVarEntry_t *anker, FILE *outputfile, int level, RH4
 
     rh4n_log_debug(props->logging, "Just generate a normal object");
 
-    if(anker->prev != NULL || level == 0) fwprintf(outputfile, L"{");
+    if(anker->prev != NULL || level == 0) { RH4NJSON_PRINTOBJECTOPEN(outputfile); }
 
     for(hptr = anker; hptr != NULL; hptr = hptr->next) {
-        fwprintf(outputfile, L"\"%s\":", hptr->name);
+        RH4NJSON_PRINTNAME(outputfile, hptr->name);
         if(hptr->var.type == RH4NVARTYPEGROUP) {
             rh4njsonPrintObject(hptr->nextlvl, outputfile, level+1, props);
         } else if(hptr->var.type == RH4NVARTYPEARRAY) {
@@ -70,9 +75,9 @@ void rh4njsonPrintObject(RH4nVarEntry_t *anker, FILE *outputfile, int level, RH4
         } else {
             rh4nvarPrintVar(&hptr->var, props, outputfile); 
         }
-        if(hptr->next != NULL) { fwprintf(outputfile, L","); }
+        if(hptr->next != NULL) { write(outputfile, ",", 1); }
     }
 
-    if(anker->prev != NULL || level == 0) fwprintf(outputfile, L"}");
+    if(anker->prev != NULL || level == 0) { RH4NJSON_PRINTOBJECTCLOSE(outputfile); }
 }
 

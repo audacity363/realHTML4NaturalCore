@@ -14,7 +14,7 @@
         
 typedef struct {
     int vartype;
-    void (*printfunction)(RH4nVarObj*, RH4nProperties*, FILE*);
+    void (*printfunction)(RH4nVarObj*, RH4nProperties*, int);
 } RH4nVarPrint;
 
 
@@ -22,12 +22,12 @@ void rh4nvarPrintList(RH4nVarList*, RH4nProperties*);
 int rh4nvarPrintJSONToFile(RH4nVarList*, char*, RH4nProperties*);
 void rh4nvarPrintFork(RH4nVarEntry_t*, int, int, RH4nProperties*);
 void rh4nvarPrintJSONFork(RH4nVarEntry_t*, int, int, RH4nProperties*, FILE*);
-void rh4nvarPrintVar(RH4nVarObj*, RH4nProperties*, FILE*);
-void rh4nvarPrintString(RH4nVarObj*, RH4nProperties*, FILE*);
-void rh4nvarPrintUString(RH4nVarObj*, RH4nProperties*, FILE*);
-void rh4nvarPrintBool(RH4nVarObj*, RH4nProperties*, FILE*);
-void rh4nvarPrintInt(RH4nVarObj*, RH4nProperties*, FILE*);
-void rh4nvarPrintFloat(RH4nVarObj*, RH4nProperties*, FILE*);
+void rh4nvarPrintVar(RH4nVarObj*, RH4nProperties*, int);
+void rh4nvarPrintString(RH4nVarObj*, RH4nProperties*, int);
+void rh4nvarPrintUString(RH4nVarObj*, RH4nProperties*, int);
+void rh4nvarPrintBool(RH4nVarObj*, RH4nProperties*, int);
+void rh4nvarPrintInt(RH4nVarObj*, RH4nProperties*, int);
+void rh4nvarPrintFloat(RH4nVarObj*, RH4nProperties*, int);
 void rh4nvarPrintJSONArray(RH4nVarObj*, int, int, RH4nProperties*, FILE*);
 void rh4nvarPrintJSONArrayDim(RH4nVarObj*, int, int, RH4nProperties*, FILE*);
 bool checkArrayGroup(RH4nVarEntry_t*);

@@ -4,5 +4,6 @@
 *.swp
 *~
 *.war
-./bin/*
-./bin/realHTML4NaturalNatCaller
+*.i
+*.s
+bin/*

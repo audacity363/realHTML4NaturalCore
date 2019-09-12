@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <unistd.h>
 #include <wchar.h>
 
 #include "rh4n.h"
@@ -63,7 +64,7 @@ char *rh4nvarPrintGetTypeString(int vartype) {
 }
 
 
-void rh4nvarPrintVar(RH4nVarObj *variable, RH4nProperties *props, FILE *outputfile) {
+void rh4nvarPrintVar(RH4nVarObj *variable, RH4nProperties *props, int outputfile) {
     RH4nVarPrint printTable[] = {
         {RH4NVARTYPESTRING, rh4nvarPrintString},
         {RH4NVARTYPEUSTRING, rh4nvarPrintUString},
@@ -99,44 +100,48 @@ bool checkArrayGroup(RH4nVarEntry_t *variable) {
     return(true);
 }
 
-void rh4nvarPrintString(RH4nVarObj *variable, RH4nProperties *props, FILE *outputfile) {
+void rh4nvarPrintString(RH4nVarObj *variable, RH4nProperties *props, int outputfile) {
     if(variable->value == NULL) {
-        fwprintf(outputfile, L"\"\"");
+        write(outputfile, "\"\"", 2);
         return;
     }
-    fwprintf(outputfile, L"\"%s\"", (char*)variable->value);
+
+    write(outputfile, "\"", 1);
+    write(outputfile, variable->value, strlen((char*)variable->value));
+    write(outputfile, "\"", 1);
 }
 
-void rh4nvarPrintUString(RH4nVarObj *variable, RH4nProperties *props, FILE *outputfile) {
+void rh4nvarPrintUString(RH4nVarObj *variable, RH4nProperties *props, int outputfile) {
     if(variable->value == NULL) {
-        fwprintf(outputfile, L"\"\"");
+        write(outputfile, "\"\"", 2);
         return;
     }
-    fwprintf(outputfile, L"\"%S\"", (wchar_t*)variable->value);
+    write(outputfile, "\"Unicode is currently not supported\"", 36);
 }
 
-void rh4nvarPrintBool(RH4nVarObj *variable, RH4nProperties *props, FILE *outputfile) {
+void rh4nvarPrintBool(RH4nVarObj *variable, RH4nProperties *props, int outputfile) {
     if(variable->value == NULL) {
-        fwprintf(outputfile, L"false");
+        write(outputfile, "false", 5);
         return;
     }
-    fwprintf(outputfile, L"%s", *((bool*)variable->value) == 1 ? "true" : "false");
+    const char *value = *((bool*)variable->value) == 1 ? "true" : "false";
+    write(outputfile, value, strlen(value));
 }
 
-void rh4nvarPrintInt(RH4nVarObj *variable, RH4nProperties *props, FILE *outputfile) {
+void rh4nvarPrintInt(RH4nVarObj *variable, RH4nProperties *props, int outputfile) {
     if(variable->value == NULL) {
-        fwprintf(outputfile, L"0");
+        write(outputfile, "0", 1);
         return;
     }
-    fwprintf(outputfile, L"%d", *((int*)variable->value));
+    dprintf(outputfile, "%d", *((int*)variable->value));
 }
 
-void rh4nvarPrintFloat(RH4nVarObj *variable, RH4nProperties *props, FILE *outputfile) {
+void rh4nvarPrintFloat(RH4nVarObj *variable, RH4nProperties *props, int outputfile) {
     if(variable->value == NULL) {
-        fwprintf(outputfile, L"0");
+        write(outputfile, "0", 1);
         return;
     }
-    fwprintf(outputfile, L"%f", *((double*)variable->value));
+    dprintf(outputfile, "%f", *((double*)variable->value));
 }
 
 void rh4nvarPrintTabs(int level, RH4nProperties *props) {
