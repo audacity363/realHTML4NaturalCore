@@ -13,7 +13,7 @@
 int rh4njsonPrintJSONToFile(RH4nVarList *varlist, char *filename, RH4nProperties *props) {
     int outputfile = 0;
 
-    if((outputfile = open(filename, O_NOFOLLOW | O_TRUNC, O_WRONLY)) < 0) {
+    if((outputfile = open(filename, O_WRONLY)) < 0) {
         rh4n_log_error(props->logging, "Could not open [%s] => %s", filename, strerror(errno));
         return(RH4N_RET_INTERNAL_ERR);
     }
