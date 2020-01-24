@@ -34,13 +34,13 @@ int rh4nvarsLoadNode(int inputfile, RH4nVarList *varlist) {
     while(1) {
         //End of file
         ret = read(inputfile, &namelength, sizeof(namelength));
-        printf("readret: [%d]\n", ret);
+        //printf("readret: [%d]\n", ret);
         if(ret == 0) {
             break;
         } else if(namelength == RH4NVAR_END_OF_LIST) {
             break;
         }
-        printf("namelength: [%d]\n", namelength);
+        //printf("namelength: [%d]\n", namelength);
         if(namelength == 0) {
             break;
         }
