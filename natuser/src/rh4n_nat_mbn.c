@@ -62,12 +62,15 @@ int rh4nnatPutParms(RH4nVarList *varlist, WORD nparms, void *parmhandle, RH4nVar
                 pos.parm_positions[i].varname, rc);
             continue;
         }
+
+        rh4n_log_debug(parms->props->logging, "try to set variable %s.%s...", groupname, pos.parm_positions[i].varname);
         
         for(x=0; x < callbacksize; x++)  {
             if(callbacks[x].vartype == desc.format) {
                 if(((rc = callbacks[x].callback(&args, groupname,
                         pos.parm_positions[i].varname)) != RH4N_RET_OK) && rc != RH4N_RET_USE_F8) {
-                    return(rc);
+                    continue;
+                    //return(rc);
                 }
             }
         }
