@@ -88,7 +88,7 @@ void rh4njsonPrintJSONSubArray(RH4nVarEntry_t *target, int outputfile, int curdi
 
     RH4NJSON_PRINTARRAYOPEN(outputfile);
     rh4njsonPrintObjectArrayEntry(target, outputfile, curdim+1, args_new, props);
-    RH4NJSON_PRINTARRAYOPEN(outputfile);
+    RH4NJSON_PRINTARRAYCLOSE(outputfile);
 }
 
 

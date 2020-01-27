@@ -21,7 +21,7 @@ int main(int argc, char *argv[]) {
 		exit(ret);
 	}
 
-	props.logging = rh4nLoggingCreateStreamingRule(props.natlibrary, props.natprogram, RH4N_DEVELOP, props.logpath);
+	props.logging = rh4nLoggingCreateStreamingRule(props.natlibrary, props.natprogram, props.i_loglevel, props.logpath);
 
 	rh4nCallNatural(&props);
 
