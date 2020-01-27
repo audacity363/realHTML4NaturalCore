@@ -62,6 +62,8 @@ int rh4nnatPutParms(RH4nVarList *varlist, WORD nparms, void *parmhandle, RH4nVar
                 pos.parm_positions[i].varname, rc);
             continue;
         }
+
+        rh4n_log_debug(parms->props->logging, "Tyring to set %s.%s", groupname, pos.parm_positions[i].varname);
         
         for(x=0; x < callbacksize; x++)  {
             if(callbacks[x].vartype == desc.format) {
