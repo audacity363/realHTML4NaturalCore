@@ -37,6 +37,7 @@ CARGS2 =
 CARGS_SO = -c -g -fpic $(INCLUDE)
 
 LIBOUTPUT = ./bin/libs/
+TESTOUTPUT = ./bin/tests/
 
 help:
 	@printf "Targets:\n"
@@ -71,6 +72,10 @@ help:
 all: utils logging vars var2name ldaparser natuserlib natcaller
 	@printf "You find the binarys under ./bin\n"
 
+tests_pre:
+	@mkdir -p $(TESTOUTPUT)
+	@rm -f $(TESTOUTPUT)/*
+
 #                         +------------------+
 #-------------------------|      Utils       |---------------------------------
 #                         +------------------+
@@ -78,7 +83,8 @@ all: utils logging vars var2name ldaparser natuserlib natcaller
 UTILS_SRC = ./libs/rh4n_utils/src
 UTILS_BIN = ./bin/rh4n_utils
 UTILS_OBJS = rh4n_utils.o \
-			 rh4n_utils_prop.o
+			 rh4n_utils_prop.o \
+			 rh4n_utils_namestack.o
 UTILS_LIB = librh4nutils.a
 
 utils: utils_clean utils_pre $(UTILS_OBJS)
@@ -100,6 +106,10 @@ utils_clean:
 	@rm -f $(LIBOUTPUT)/$(UTILS_BIN)
 	@printf "Cleaning utils objects\n"
 	@rm -f $(UTILS_BIN)/*.o
+
+utils_tests: utils tests_pre
+	@printf "Building utils tests\n"
+	@$(CC) -Wall $(UTILS_SRC)/../tests/nameStack_test.c -o $(TESTOUTPUT)/nameStack_test $(INCLUDE) $(LIBS)
 
 #                         +-----------------+
 #-------------------------|     Logging     |----------------------------------
