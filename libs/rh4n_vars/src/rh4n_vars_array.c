@@ -223,7 +223,7 @@ int rh4nvarSetArrayEntry_m(RH4nVarList *varlist, const char **pgroupname, const 
     if((varlibret = rh4nvarGetRef_m(varlist, (char**)pgroupname, (char*)name, &_refvar)) != RH4N_RET_OK) { return(varlibret); }
     if((varlibret = rh4nvarGetArrayEntry(&_refvar.var->var, index, &arrayentry)) != RH4N_RET_OK) { return(varlibret); }
 
-    switch(_refvar.var->var.type) {
+    switch(arrayentry->type) {
         case RH4NVARTYPESTRING:
             varlibret = rh4nvarSetString(arrayentry, (char*)buffer);
             break;

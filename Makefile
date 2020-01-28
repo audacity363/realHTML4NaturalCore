@@ -193,6 +193,10 @@ vars_file_load: vars
 	@$(CC) -g ./libs/rh4n_vars/test/var_load.c $(INCLUDE) -o ./libs/rh4n_vars/test/var_load $(LIBS)
 	@./libs/rh4n_vars/test/var_load
 
+vars_tests: vars tests_pre
+	@printf "Building vars tests\n"
+	@$(CC) -Wall -g $(VARS_SRC)/../tests/array_test.c -o $(TESTOUTPUT)/array_test $(INCLUDE) $(LIBS) -lrh4nlogging -lrh4nvars
+
 #                         +-----------------+
 #-------------------------|  JSON generator |----------------------------------
 #                         +-----------------+
