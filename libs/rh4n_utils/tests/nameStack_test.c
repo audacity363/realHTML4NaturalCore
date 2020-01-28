@@ -23,6 +23,8 @@ int main(int argc, char *argv[]) {
 
     if(stack.length != 4) { fprintf(stderr, "stack->length != 4\n"); exit(1); };
 
+    rh4nUtilsPrintNameStack(&stack);
+
     for(i = 4; i > 0; i--) {
         sprintf(namebuff, "Name%d", i);
 

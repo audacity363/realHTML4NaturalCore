@@ -10,11 +10,11 @@ typedef struct {
     uint32_t length;
 } rh4nNameStack;
 
-#define rh4nUtilsInitNameStack(stack) (stack)->length = 0; (stack)->names = NULL;
-
+void rh4nUtilsInitNameStack(rh4nNameStack *stack);
 char *rh4nUtilsPopNamefromStack(rh4nNameStack *stack);
 char *rh4nUtilsPushNametoStack(rh4nNameStack *stack, const char *name);
 void rh4nUtilsDeinitNameStack(rh4nNameStack *stack);
+void rh4nUtilsPrintNameStack(rh4nNameStack *stack);
 
 #ifdef __cplusplus
 }

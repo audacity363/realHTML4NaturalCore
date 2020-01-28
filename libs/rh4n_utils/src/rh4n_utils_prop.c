@@ -141,6 +141,9 @@ int rh4nUtilsLoadProperties(char *filename, RH4nProperties *props) {
         RH4N_UTILS_READ(inputfile, props->username, i_tmp, ret);
 
     close(inputfile);
+
+    rh4nUtilsPrintProperties(props);
+    fflush(stdout);
     return(RH4N_RET_OK);
 }
 
