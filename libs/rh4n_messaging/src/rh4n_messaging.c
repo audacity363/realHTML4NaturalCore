@@ -96,3 +96,9 @@ int rh4n_messaging_recvAcknowledge(int recvSocket, uint8_t *ack, RH4nProperties 
 
     return(0);
 }
+
+int rh4n_messaging_sendDataChunk(int sendSocket, void *data, int length, RH4nProperties *props) {
+    if(rh4n_messaging_writeToSocket(sendSocket, data, length, props) < 0) { return(-1); }
+    if(rh4n_messaging_recvAcknowledge(sendSocket, NULL, props) < 0) { return(-1); }
+    return(0);
+}

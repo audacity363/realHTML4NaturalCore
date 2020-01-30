@@ -321,7 +321,9 @@ MESSAGING_SRC = ./libs/rh4n_messaging/src
 MESSAGING_BIN = ./bin/rh4n_messaging
 MESSAGING_OBJS = rh4n_messaging.o \
 				 rh4n_messaging_uds.o \
-				 rh4n_messaging_sessionInformations.o
+				 rh4n_messaging_sessionInformations.o \
+				 rh4n_messaging_sendvars.o \
+				 rh4n_messaging_recvvars.o
 MESSAGING_LIB = librh4nmessaging.a
 
 messaging: logging messaging_clean messaging_pre $(MESSAGING_OBJS)
@@ -366,7 +368,8 @@ NATUSER_OBJS = rh4n_nat_jumptab.o \
 			   rh4n_nat_mbn.o \
 			   rh4n_nat_getbodyobj.o \
 			   rh4n_nat_getbodyvar.o \
-			   rh4n_nat_geturlvar.o \ rh4n_nat_getuser.o \
+			   rh4n_nat_geturlvar.o \
+			   rh4n_nat_getuser.o \
 			   rh4n_nat_debug_init.o
 			   
 NATUSER_READOUT_OBJS = rh4n_nat_a_handling.o \

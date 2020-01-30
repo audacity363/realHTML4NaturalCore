@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include <errno.h>
 #include <string.h>
 #include <stdint.h>
 
@@ -18,6 +19,11 @@ int main() {
     //props.natsrcpath = "/opt/softwareag/fuser/";
     strcpy(props.username, "MyUSer");
 
+    rh4n_log_develop(props.logging, "LoadfromFile: %d", rh4nvarLoadFromFile("./libs/rh4n_messaging/tests/testvars", &props.bodyvars));
+    rh4n_log_develop(props.logging, "strerror: %s", strerror(errno));
+    rh4nvarPrintList(&props.bodyvars, NULL);
+
+
     rh4nUtilsPrintProperties(&props);
 
     int server = rh4n_messaging_createUDSServer("/tmp/rh4nTestUDSS", RH4NLIBMESSAGINGFLAG_OVERRIDE, &props);
@@ -27,5 +33,6 @@ int main() {
 
     rh4n_messaging_sendSessionInformations(client, &props);
 
+    rh4n_messaging_sendVarlist(client, &props.bodyvars, &props);
 }
 

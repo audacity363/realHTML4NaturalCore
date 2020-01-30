@@ -8,14 +8,21 @@ extern "C" {
 #define RH4NLIBMESSAGINGFLAG_OVERRIDE    0x0001
 #define RH4NLIBMESSAGINGFLAG_NONBLOCKING 0x0002
 
+#define RH4NLIBMESSAGINGFLAG_NEXT 0x01
+#define RH4NLIBMESSAGINGFLAG_NEXTLVL 0x02
+
 #define RH4NLIBMESSAGINGMAXCLIENTS 10
-#define RH4NLIBMESSAGING_RESPONSETIMEOUT 120
+#define RH4NLIBMESSAGING_RESPONSETIMEOUT 5
 
 #define RH4NLIBMESSAGING_TYPESESSIONINFORMATIONS 0x01
+#define RH4NLIBMESSAGING_TYPEVARLIST 0x02
 
 #define ASCII_STARTOFHEADER 0x01
+#define ASCII_EOT 0x06
 #define ASCII_ACK 0x06
 #define ASCII_NACK 0x15
+#define ASCII_RS 0x1E
+
 
 typedef struct {
     uint8_t messageType;
@@ -38,9 +45,23 @@ int rh4n_messaging_writeToSocket(int, void*, int, RH4nProperties*);
 int rh4n_messaging_readFromSocket(int recvSocket, void *data, int length, RH4nProperties *props);
 void rh4n_messaging_sendAcknowledge(int sendSocket, uint8_t ack, RH4nProperties *props);
 int rh4n_messaging_recvAcknowledge(int recvSocket, uint8_t *ack, RH4nProperties *props);
+int rh4n_messaging_sendDataChunk(int sendSocket, void *data, int length, RH4nProperties *props);
 
 int rh4n_messaging_sendSessionInformations(int sendSocket, RH4nProperties *props);
 int rh4n_messaging_recvSessionInformations(int recvSocket, RH4nProperties *props);
+
+
+int rh4n_messaging_sendVarlist(int sendSocket, RH4nVarList *varlist, RH4nProperties *props);
+int rh4n_messaging_processVarlistNode(int sendSocket, RH4nVarEntry_t *target, RH4nProperties *props, uint32_t level);
+int rh4n_messaging_sendVarlistNode(int sendSocket, RH4nVarEntry_t *target, RH4nProperties *props);
+int rh4n_messaging_sendVarlistValue(int sendSocket, RH4nVarObj *target, RH4nProperties *props);
+int rh4n_messaging_sendVarlistArray(int sendSocket, RH4nVarObj *target, RH4nProperties *props);
+
+int rh4n_messaging_recvVarlist(int recvSocket, RH4nVarList *varlist, RH4nProperties *props);
+int rh4n_messaging_recvVarlistNode(int recvSocket, RH4nVarEntry_t *target, RH4nProperties *props);
+int rh4n_messaging_recvVarlistValue(int recvSocket, RH4nVarObj *target, RH4nProperties *props);
+int rh4n_messaging_recvVarlistArray(int recvSocket, RH4nVarObj *target, RH4nProperties *props);
+void rh4n_messaging_recvVarlistAddNode(uint8_t nextFlags, RH4nVarEntry_t *newNode, RH4nVarEntry_t *lastNode, RH4nVarList *varlist);
 
 #ifdef __cplusplus
 }
