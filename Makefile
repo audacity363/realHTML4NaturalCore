@@ -17,11 +17,12 @@ INCLUDE = -I./include/ \
 		  -I./libs/rh4n_jsongenerator/include/ \
 		  -I./libs/rh4n_ldaparser/include/ \
 		  -I./libs/rh4n_var2name/include/ \
+		  -I./libs/rh4n_messaging/include/ \
 		  -I./natuser/include/ \
 		  -I./natcaller/include/
 
 LIBS = -L./bin/libs \
-	   -lrh4nutils -lrh4nlogging -lrh4nvar2name -lrh4nvars -lrh4nldaparser \
+	   -lrh4nmessaging -lrh4nutils -lrh4nlogging -lrh4nvar2name -lrh4nvars -lrh4nldaparser \
 	   -lrh4njsongenerator -ldl
 
 #XLC:
@@ -59,6 +60,10 @@ help:
 	@printf "\t|                                                            |\n"
 	@printf "\t| var2name                                                   |\n"
 	@printf "\t|   Name and Postion matching library (./libs/rh4n_var2name) |\n"
+	@printf "\t|                                                            |\n"
+	@printf "\t| messaging                                                  |\n"
+	@printf "\t|   Communication between the framework and other components |\n"
+	@printf "\t|   (./libs/rh4n_messaging)                                  |\n"
 	@printf "\t|                                                            |\n"
 	@printf "\t| natuserlib                                                 |\n"
 	@printf "\t|   Shared library for natural (./natuserlib)                |\n"
@@ -309,6 +314,45 @@ var2name_test: var2name
 	@./libs/rh4n_var2name/test/main
 
 #                         +-----------------+
+#-------------------------|    Messaging    |----------------------------------
+#                         +-----------------+
+
+MESSAGING_SRC = ./libs/rh4n_messaging/src
+MESSAGING_BIN = ./bin/rh4n_messaging
+MESSAGING_OBJS = rh4n_messaging.o \
+				 rh4n_messaging_uds.o \
+				 rh4n_messaging_sessionInformations.o
+MESSAGING_LIB = librh4nmessaging.a
+
+messaging: logging messaging_clean messaging_pre $(MESSAGING_OBJS)
+	@printf "Creating $(LIBOUTPUT)/$(MESSAGING_LIB)\n"
+	@$(AR) -cr $(LIBOUTPUT)/$(MESSAGING_LIB) $(MESSAGING_BIN)/*.o
+	@printf "Done compiling and linking messaging\n"
+
+$(MESSAGING_OBJS):
+	@printf "CC $(MESSAGING_SRC)/$*.c => $(MESSAGING_BIN)/$*.o\n"
+	@$(CC) $(CARGS1) -o $(MESSAGING_BIN)/$*.o $(MESSAGING_SRC)/$*.c
+
+messaging_pre:
+	@printf "Creating messaging output folder\n"
+	@mkdir -p $(MESSAGING_BIN)
+	@mkdir -p $(LIBOUTPUT)
+
+messaging_clean:
+	@printf "Creating messaging library\n"
+	@rm -f $(LIBOUTPUT)/$(MESSAGING_LIB)
+	@printf "Cleaning messaging objects\n"
+	@rm -f $(MESSAGING_BIN)/*.o
+
+messaging_tests: messaging tests_pre
+	@printf "Building messaging tests\n"
+	@printf "CC $(MESSAGING_SRC)/../tests/server.c => $(TESTOUTPUT)/messaging_server\n"
+	@$(CC) -Wall -g $(MESSAGING_SRC)/../tests/server.c -o $(TESTOUTPUT)/messaging_server $(INCLUDE) $(LIBS)
+	@printf "CC $(MESSAGING_SRC)/../tests/client.c => $(TESTOUTPUT)/messaging_client\n"
+	@$(CC) -Wall -g $(MESSAGING_SRC)/../tests/client.c -o $(TESTOUTPUT)/messaging_client $(INCLUDE) $(LIBS)
+
+
+#                         +-----------------+
 #-------------------------|   Natuser lib   |----------------------------------
 #                         +-----------------+
 
@@ -322,8 +366,7 @@ NATUSER_OBJS = rh4n_nat_jumptab.o \
 			   rh4n_nat_mbn.o \
 			   rh4n_nat_getbodyobj.o \
 			   rh4n_nat_getbodyvar.o \
-			   rh4n_nat_geturlvar.o \
-			   rh4n_nat_getuser.o \
+			   rh4n_nat_geturlvar.o \ rh4n_nat_getuser.o \
 			   rh4n_nat_debug_init.o
 			   
 NATUSER_READOUT_OBJS = rh4n_nat_a_handling.o \
