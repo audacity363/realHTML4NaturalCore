@@ -31,30 +31,19 @@ int rh4n_messaging_recvVarlist(int recvSocket, RH4nVarList *varlist, RH4nPropert
         rh4n_log_develop(props->logging, "Start reading node");
         if(rh4n_messaging_recvVarlistNode(recvSocket, newEntry, props) < 0) { return(-1); }
         
-        rh4n_log_develop(props->logging, "Waiting for next flags");
-        if(rh4n_messaging_waitForData(recvSocket, RH4NLIBMESSAGING_RESPONSETIMEOUT, 0, props) < 0) { 
-            rh4n_log_fatal(props->logging, "Timeout while waiting for next flags");
-            return(-1);
-        }
-   
         pnextFlags = nextFlags;
-        rh4n_log_develop(props->logging, "Reading next flags");
-        if(rh4n_messaging_readFromSocket(recvSocket, &nextFlags, sizeof(nextFlags), props) < 0) { return(-1); }
+        rh4n_log_develop(props->logging, "Waiting for next flags");
+        if(rh4n_messaging_recvDataChunk(recvSocket, &nextFlags, sizeof(nextFlags), props) < 0) { return(-1); }
         rh4n_messaging_sendAcknowledge(recvSocket, ASCII_ACK, props);
-        rh4n_log_develop(props->logging, "Done reading Node");
 
-        rh4n_log_develop(props->logging, "next flag: [0x%.2x]", nextFlags);
 
         rh4n_messaging_recvVarlistAddNode(pnextFlags, newEntry, lastNode, varlist);
         lastNode = newEntry;
 
+        rh4n_log_develop(props->logging, "Done reading Node");
+
         rh4n_log_develop(props->logging, "Waiting for seperator");
-        if(rh4n_messaging_waitForData(recvSocket, RH4NLIBMESSAGING_RESPONSETIMEOUT, 0, props) < 0) { 
-            rh4n_log_fatal(props->logging, "Timeout while waiting for seperator");
-            return(-1);
-        }
-        rh4n_log_develop(props->logging, "Reading seperator");
-        if(rh4n_messaging_readFromSocket(recvSocket, &seperator, sizeof(seperator), props) < 0) { return(-1); }
+        if(rh4n_messaging_recvDataChunk(recvSocket, &seperator, sizeof(seperator), props) < 0) { return(-1); }
         if(seperator == ASCII_EOT) {
             break;
         }
@@ -67,13 +56,8 @@ int rh4n_messaging_recvVarlistNode(int recvSocket, RH4nVarEntry_t *target, RH4nP
     uint32_t nameLength = 0;
 
     rh4n_log_develop(props->logging, "Waiting for var name length");
-    if(rh4n_messaging_waitForData(recvSocket, RH4NLIBMESSAGING_RESPONSETIMEOUT, 0, props) < 0) { 
-        rh4n_log_fatal(props->logging, "Timeout while waiting for var name length");
-        return(-1);
-    }
-   
-    rh4n_log_develop(props->logging, "Reading var name length");
-    if(rh4n_messaging_readFromSocket(recvSocket, &nameLength, sizeof(nameLength), props) < 0) { return(-1); }
+    if(rh4n_messaging_recvDataChunk(recvSocket, &nameLength, sizeof(nameLength), props) < 0) { return(-1); }
+
     if((target->name = malloc(nameLength+1)) == NULL) {
         rh4n_log_fatal(props->logging, "Could not allocate memory for var name");
         rh4n_messaging_sendAcknowledge(recvSocket, ASCII_NACK, props);
@@ -83,17 +67,9 @@ int rh4n_messaging_recvVarlistNode(int recvSocket, RH4nVarEntry_t *target, RH4nP
     rh4n_messaging_sendAcknowledge(recvSocket, ASCII_ACK, props);
 
     rh4n_log_develop(props->logging, "Waiting for var name");
-    if(rh4n_messaging_waitForData(recvSocket, RH4NLIBMESSAGING_RESPONSETIMEOUT, 0, props) < 0) {
-        rh4n_log_fatal(props->logging, "Timeout while waiting for var name");
-        return(-1);
-    }
-
-    rh4n_log_develop(props->logging, "Reading varname");
-    if(rh4n_messaging_readFromSocket(recvSocket, target->name, nameLength, props) < 0) { 
-    rh4n_messaging_sendAcknowledge(recvSocket, ASCII_NACK, props);
-        return(-1); 
-    }
+    if(rh4n_messaging_recvDataChunk(recvSocket, target->name, nameLength, props) < 0) { return(-1); }
     rh4n_messaging_sendAcknowledge(recvSocket, ASCII_ACK, props);
+
     rh4n_log_develop(props->logging, "God varname: %s", target->name);
 
     return(rh4n_messaging_recvVarlistValue(recvSocket, &target->var, props));
@@ -103,12 +79,7 @@ int rh4n_messaging_recvVarlistValue(int recvSocket, RH4nVarObj *target, RH4nProp
     uint8_t vartype = 0;
 
     rh4n_log_develop(props->logging, "Waiting for vartype");
-    if(rh4n_messaging_waitForData(recvSocket, RH4NLIBMESSAGING_RESPONSETIMEOUT, 0, props) < 0) {
-        rh4n_log_fatal(props->logging, "Timeout while waiting for var type");
-        return(-1);
-    }
-    rh4n_log_develop(props->logging, "Reading vartype");
-    if(rh4n_messaging_readFromSocket(recvSocket, &vartype, sizeof(vartype), props) < 0) { return(-1); }
+    if(rh4n_messaging_recvDataChunk(recvSocket, &vartype, sizeof(vartype), props) < 0) { return(-1); }
     target->type = vartype;
     rh4n_messaging_sendAcknowledge(recvSocket, ASCII_ACK, props);
 
@@ -117,18 +88,11 @@ int rh4n_messaging_recvVarlistValue(int recvSocket, RH4nVarObj *target, RH4nProp
     }
 
     rh4n_log_develop(props->logging, "Waiting for var value length");
-    if(rh4n_messaging_waitForData(recvSocket, RH4NLIBMESSAGING_RESPONSETIMEOUT, 0, props) < 0) {
-        rh4n_log_fatal(props->logging, "Timeout while waiting for var length");
-        return(-1);
-    }
-    rh4n_log_develop(props->logging, "Reading var value length");
-    if(rh4n_messaging_readFromSocket(recvSocket, &target->length, sizeof(target->length), props) < 0) { return(-1); }
-
+    if(rh4n_messaging_recvDataChunk(recvSocket, &target->length, sizeof(target->length), props) < 0) { return (-1); }
 
     if(vartype == RH4NVARTYPEARRAY) {
         return(rh4n_messaging_recvVarlistArray(recvSocket, target, props));
     }
-
 
     if(target->length == 0) {
         target->value = NULL;
@@ -145,16 +109,7 @@ int rh4n_messaging_recvVarlistValue(int recvSocket, RH4nVarObj *target, RH4nProp
     rh4n_messaging_sendAcknowledge(recvSocket, ASCII_ACK, props);
 
     rh4n_log_develop(props->logging, "Waiting for var value");
-    if(rh4n_messaging_waitForData(recvSocket, RH4NLIBMESSAGING_RESPONSETIMEOUT, 0, props) < 0) {
-        rh4n_log_fatal(props->logging, "Timeout while waiting for var value");
-        return(-1);
-    }
-
-    rh4n_log_develop(props->logging, "Reading var value");
-    if(rh4n_messaging_readFromSocket(recvSocket, target->value, target->length, props) < 0) {
-        rh4n_messaging_sendAcknowledge(recvSocket, ASCII_NACK, props);
-        return(-1);
-    }
+    if(rh4n_messaging_recvDataChunk(recvSocket, target->value, target->length, props) < 0) { return (-1); }
     rh4n_messaging_sendAcknowledge(recvSocket, ASCII_ACK, props);
 
     return(0);

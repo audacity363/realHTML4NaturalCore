@@ -102,3 +102,9 @@ int rh4n_messaging_sendDataChunk(int sendSocket, void *data, int length, RH4nPro
     if(rh4n_messaging_recvAcknowledge(sendSocket, NULL, props) < 0) { return(-1); }
     return(0);
 }
+
+int rh4n_messaging_recvDataChunk(int recvSocket, void *data, int length, RH4nProperties *props) {
+    if(rh4n_messaging_waitForData(recvSocket, RH4NLIBMESSAGING_RESPONSETIMEOUT, 0, props) < 0) { return(-1); }
+    if(rh4n_messaging_readFromSocket(recvSocket, data, length, props) < 0) { return(-1); }
+    return(0);
+}

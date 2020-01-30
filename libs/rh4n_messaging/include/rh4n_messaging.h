@@ -46,6 +46,7 @@ int rh4n_messaging_readFromSocket(int recvSocket, void *data, int length, RH4nPr
 void rh4n_messaging_sendAcknowledge(int sendSocket, uint8_t ack, RH4nProperties *props);
 int rh4n_messaging_recvAcknowledge(int recvSocket, uint8_t *ack, RH4nProperties *props);
 int rh4n_messaging_sendDataChunk(int sendSocket, void *data, int length, RH4nProperties *props);
+int rh4n_messaging_recvDataChunk(int recvSocket, void *data, int length, RH4nProperties *props);
 
 int rh4n_messaging_sendSessionInformations(int sendSocket, RH4nProperties *props);
 int rh4n_messaging_recvSessionInformations(int recvSocket, RH4nProperties *props);
