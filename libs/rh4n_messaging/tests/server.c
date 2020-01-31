@@ -33,6 +33,8 @@ int main() {
 
     rh4n_messaging_sendSessionInformations(client, &props);
 
+    rh4n_messaging_sendVarlist(client, &props.urlvars , &props);
+
     rh4n_messaging_sendVarlist(client, &props.bodyvars, &props);
 }
 

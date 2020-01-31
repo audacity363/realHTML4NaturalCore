@@ -9,8 +9,12 @@
 #include "rh4n_messaging.h"
 
 int rh4n_messaging_sendVarlist(int sendSocket, RH4nVarList *varlist, RH4nProperties *props) {
-    RH4N_CHECKERROR(rh4n_messaging_sendHeader(sendSocket, RH4NLIBMESSAGING_TYPEVARLIST, props));
+    RH4N_CHECKERROR(rh4n_messaging_sendHeader(sendSocket, RH4NLIBMESSAGING_TYPEVARLIST, 
+               varlist->anker == NULL ? 0 : 1, props));
 
+    if(varlist->anker == NULL) {
+        return(0);
+    }
 
     RH4N_CHECKERROR(rh4n_messaging_processVarlistNode(sendSocket, varlist->anker, props, 1));
 

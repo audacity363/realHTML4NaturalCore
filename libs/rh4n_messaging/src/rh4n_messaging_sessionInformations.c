@@ -28,7 +28,7 @@ int rh4n_messaging_sendSessionInformations(int sendSocket, RH4nProperties *props
     uint32_t length = 0;
     void *target = NULL;
 
-    RH4N_CHECKERROR(rh4n_messaging_sendHeader(sendSocket, RH4NLIBMESSAGING_TYPESESSIONINFORMATIONS, props));
+    RH4N_CHECKERROR(rh4n_messaging_sendHeader(sendSocket, RH4NLIBMESSAGING_TYPESESSIONINFORMATIONS, 1, props));
 
     for(; i < sizeof(lookup)/sizeof(struct RH4nMessagingLookup); i++) {
         target = lookup[i].length == -1 ? *((void**)lookup[i].target) : lookup[i].target;

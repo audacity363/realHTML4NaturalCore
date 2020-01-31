@@ -9,8 +9,8 @@
 #include "rh4n_messaging.h"
 
 
-int rh4n_messaging_sendHeader(int sendSocket, uint8_t messageType, RH4nProperties *props) {
-    RH4nMessageingHeader_t header = { ASCII_STARTOFHEADER, messageType };
+int rh4n_messaging_sendHeader(int sendSocket, uint8_t messageType, uint32_t dataLength, RH4nProperties *props) {
+    RH4nMessageingHeader_t header = { ASCII_STARTOFHEADER, messageType, dataLength };
     
     if(rh4n_messaging_writeToSocket(sendSocket, &header, sizeof(header), props) < sizeof(header)) {
         rh4n_log_fatal(props->logging, "Could not write header to socket [%d]", sendSocket);

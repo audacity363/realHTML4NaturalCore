@@ -17,6 +17,7 @@ int main() {
     rh4n_log_develop(props.logging, "Connected to server: [%d]", client);
     rh4n_messaging_recvSessionInformations(client , &props);
 
+    rh4n_messaging_recvVarlist(client, &props.urlvars, &props);
     rh4n_messaging_recvVarlist(client, &props.bodyvars, &props);
         
     rh4nUtilsPrintProperties(&props);

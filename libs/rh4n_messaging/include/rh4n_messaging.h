@@ -32,6 +32,7 @@ typedef struct {
 typedef struct {
     uint8_t preable;
     uint8_t messageType;
+    uint32_t dataLength;
 } RH4nMessageingHeader_t;
 
 int rh4n_messaging_createUDSServer(const char*, uint16_t, RH4nProperties*);
@@ -39,7 +40,7 @@ int rh4n_messaging_waitForClient(int, RH4nProperties*);
 int rh4n_messaging_connectToUDSServer(const char*, RH4nProperties*);
 int rh4n_messaging_waitForData(int, int, int, RH4nProperties*);
 
-int rh4n_messaging_sendHeader(int sendSocket, uint8_t messageType, RH4nProperties *props);
+int rh4n_messaging_sendHeader(int sendSocket, uint8_t messageType, uint32_t dataLength, RH4nProperties *props);
 int rh4n_messaging_recvHeader(int recvSocket, RH4nMessageingHeader_t *header, RH4nProperties *props);
 int rh4n_messaging_writeToSocket(int, void*, int, RH4nProperties*);
 int rh4n_messaging_readFromSocket(int recvSocket, void *data, int length, RH4nProperties *props);

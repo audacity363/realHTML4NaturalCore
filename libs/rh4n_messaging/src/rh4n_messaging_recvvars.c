@@ -21,6 +21,10 @@ int rh4n_messaging_recvVarlist(int recvSocket, RH4nVarList *varlist, RH4nPropert
         return(-1);
     }
 
+    if(header.dataLength == 0) {
+        return(0);
+    }
+
     while(1) {
         if((newEntry = malloc(sizeof(RH4nVarEntry_t))) == NULL) {
             rh4n_log_fatal(props->logging, "Could not allocate memory for new node");
