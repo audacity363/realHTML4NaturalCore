@@ -21,13 +21,8 @@ int rh4n_messaging_sendHeader(int sendSocket, uint8_t messageType, RH4nPropertie
 }
 
 int rh4n_messaging_recvHeader(int recvSocket, RH4nMessageingHeader_t *header, RH4nProperties *props) {
-    if(rh4n_messaging_waitForData(recvSocket, RH4NLIBMESSAGING_RESPONSETIMEOUT, 0, props) < 0) {
-        return(-1);
-    }
-    
-    if(rh4n_messaging_readFromSocket(recvSocket, header, sizeof(RH4nMessageingHeader_t), props) < 0) {
-        return(-1);
-    }
+    RH4N_CHECKERROR(rh4n_messaging_waitForData(recvSocket, RH4NLIBMESSAGING_RESPONSETIMEOUT, 0, props));
+    RH4N_CHECKERROR(rh4n_messaging_readFromSocket(recvSocket, header, sizeof(RH4nMessageingHeader_t), props));
 
     if(header->preable != ASCII_STARTOFHEADER) {
         rh4n_log_fatal(props->logging, "Unkown header preamble: [0x%.2x]", header->preable);
@@ -98,13 +93,13 @@ int rh4n_messaging_recvAcknowledge(int recvSocket, uint8_t *ack, RH4nProperties 
 }
 
 int rh4n_messaging_sendDataChunk(int sendSocket, void *data, int length, RH4nProperties *props) {
-    if(rh4n_messaging_writeToSocket(sendSocket, data, length, props) < 0) { return(-1); }
-    if(rh4n_messaging_recvAcknowledge(sendSocket, NULL, props) < 0) { return(-1); }
+    RH4N_CHECKERROR(rh4n_messaging_writeToSocket(sendSocket, data, length, props)); 
+    RH4N_CHECKERROR(rh4n_messaging_recvAcknowledge(sendSocket, NULL, props)); 
     return(0);
 }
 
 int rh4n_messaging_recvDataChunk(int recvSocket, void *data, int length, RH4nProperties *props) {
-    if(rh4n_messaging_waitForData(recvSocket, RH4NLIBMESSAGING_RESPONSETIMEOUT, 0, props) < 0) { return(-1); }
-    if(rh4n_messaging_readFromSocket(recvSocket, data, length, props) < 0) { return(-1); }
+    RH4N_CHECKERROR(rh4n_messaging_waitForData(recvSocket, RH4NLIBMESSAGING_RESPONSETIMEOUT, 0, props));
+    RH4N_CHECKERROR(rh4n_messaging_readFromSocket(recvSocket, data, length, props)); 
     return(0);
 }

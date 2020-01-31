@@ -28,9 +28,7 @@ int rh4n_messaging_sendSessionInformations(int sendSocket, RH4nProperties *props
     uint32_t length = 0;
     void *target = NULL;
 
-    if(rh4n_messaging_sendHeader(sendSocket, RH4NLIBMESSAGING_TYPESESSIONINFORMATIONS, props) < 0) {
-        return(-1);
-    }
+    RH4N_CHECKERROR(rh4n_messaging_sendHeader(sendSocket, RH4NLIBMESSAGING_TYPESESSIONINFORMATIONS, props));
 
     for(; i < sizeof(lookup)/sizeof(struct RH4nMessagingLookup); i++) {
         target = lookup[i].length == -1 ? *((void**)lookup[i].target) : lookup[i].target;
@@ -42,17 +40,13 @@ int rh4n_messaging_sendSessionInformations(int sendSocket, RH4nProperties *props
         } else {
             length = lookup[i].length;
         }
-        //length = lookup[i].length == -1 ? strlen(*((char**)lookup[i].target)) : lookup[i].length;
 
         if(rh4n_messaging_writeToSocket(sendSocket, &length, sizeof(uint32_t), props) < 0) {
             rh4n_log_fatal(props->logging, "Could not write length to socket");
             return(-1);
         }
         
-        if(rh4n_messaging_recvAcknowledge(sendSocket, NULL, props) < 0) {
-            return(-1);
-        }
-
+        RH4N_CHECKERROR(rh4n_messaging_recvAcknowledge(sendSocket, NULL, props));
         if(length == 0) { continue; }
 
         if(rh4n_messaging_writeToSocket(sendSocket, target, length, props) < 0) {
@@ -79,9 +73,7 @@ int rh4n_messaging_recvSessionInformations(int recvSocket, RH4nProperties *props
     uint32_t length = 0;
     void *target = NULL;
 
-    if(rh4n_messaging_recvHeader(recvSocket, &header, props) < 0) {
-        return(-1);
-    }
+    RH4N_CHECKERROR(rh4n_messaging_recvHeader(recvSocket, &header, props));
 
     if(header.messageType != RH4NLIBMESSAGING_TYPESESSIONINFORMATIONS) {
         rh4n_log_fatal(props->logging, "Wrong messageType. Expected: [0x%.2x] Is: [0x%.2x]", 
@@ -95,9 +87,7 @@ int rh4n_messaging_recvSessionInformations(int recvSocket, RH4nProperties *props
             return(-1);
         }
 
-        if(rh4n_messaging_readFromSocket(recvSocket, &length, sizeof(length), props) < 0) {
-            return(-1);
-        }
+        RH4N_CHECKERROR(rh4n_messaging_readFromSocket(recvSocket, &length, sizeof(length), props));
 
         if(lookup[i].length == -1) {
             if((*((void**)lookup[i].target) = malloc(length+1)) == NULL) {
