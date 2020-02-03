@@ -7,7 +7,7 @@
 #include "rh4n.h"
 #include "rh4n_natcaller.h"
 
-void rh4nlogInternalError(RH4nProperties *props, char *error_str) {
+void rh4n_natcaller_logInternalError(RH4nProperties *props, char *error_str) {
     FILE *outputfile = NULL;
 
     if((outputfile = fopen(props->outputfile, "w")) == NULL) {
@@ -26,22 +26,22 @@ void rh4nlogInternalError(RH4nProperties *props, char *error_str) {
     return;
 }
 
-void rh4nHandleNaturalError(RH4nProperties *props, int nniret, struct natural_exception natex) {
+void rh4n_natcaller_handleNaturalError(RH4nProperties *props, int nniret, struct natural_exception natex) {
     char error_str[2048];
 
     rh4n_log_error(props->logging, "Error while executing natural program: %d", nniret);
     if(nniret > 0) {
         rh4n_log_error(props->logging, "Natural runtime error: %d", natex.natMessageNumber);
-        rh4nlogNaturalError(props, natex);
+        rh4n_natcaller_logNaturalError(props, natex);
         return;
     }
 
     sprintf(error_str, "Could not run Natural program due to a NNI error. NNIret: %d", nniret);
-    rh4nlogInternalError(props, error_str);
+    rh4n_natcaller_logInternalError(props, error_str);
     return;
 }
 
-void rh4nlogNaturalError(RH4nProperties *props, struct natural_exception natex) {
+void rh4n_natcaller_logNaturalError(RH4nProperties *props, struct natural_exception natex) {
     FILE *outputfile = NULL;
 
     if((outputfile = fopen(props->outputfile, "w")) == NULL) {
@@ -50,14 +50,8 @@ void rh4nlogNaturalError(RH4nProperties *props, struct natural_exception natex) 
         return;
     }
 
-
-    if(strcmp(props->errorrepresentation, "JSON") == 0) {
-        fprintf(outputfile, RH4N_TEMPLATE_NAT_JSON, natex.natMessageNumber, natex.natMessageText, 
+    fprintf(outputfile, RH4N_TEMPLATE_NAT_JSON, natex.natMessageNumber, natex.natMessageText, 
             natex.natLibrary, natex.natMember, natex.natName, natex.natMethod, natex.natLine);
-    } else {
-        fprintf(outputfile, RH4N_TEMPLATE_NAT_HTML, natex.natMessageNumber, natex.natMessageNumber, natex.natMessageText, 
-            natex.natLibrary, natex.natMember, natex.natName, natex.natMethod, natex.natLine);
-    }
 
     fclose(outputfile);
     return;

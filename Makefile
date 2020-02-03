@@ -429,18 +429,18 @@ natuserlib_clean:
 
 
 #                         +-----------------+
-#-------------------------|   Natuser lib   |----------------------------------
+#-------------------------|    natcaller    |----------------------------------
 #                         +-----------------+
 
 NATCALLER_OBJS = rh4n_natcaller_main.o \
-				 rh4n_natcaller_errorhandling.o \
 				 rh4n_natcaller_parmgeneration.o \
-				 rh4n_natcaller_process.o
+				 rh4n_natcaller_natural.o \
+				 rh4n_natcaller_errorhandling.o
 
 NATCALLER_SRC = ./natcaller/src
 NATCALLER_BIN = ./bin/natcaller
 
-natcaller: utils logging vars natcaller_clean natcaller_pre $(NATCALLER_OBJS)
+natcaller: utils logging vars messaging natcaller_clean natcaller_pre $(NATCALLER_OBJS)
 	@printf "Linking Natcaller\n"
 	@$(CC) -o ./bin/realHTML4NaturalNatCaller $(NATCALLER_BIN)/*.o $(LIBS)
 
@@ -456,3 +456,4 @@ natcaller_clean:
 natcaller_pre:
 	@printf "Creating natcaller output folder\n"
 	@mkdir -p $(NATCALLER_BIN)
+

@@ -12,10 +12,12 @@ int main() {
     RH4nProperties props; memset(&props, 0x00, sizeof(props));
 
     props.logging = rh4nLoggingCreateStreamingRule("", "", RH4N_DEVELOP, "");
-    props.natparms = malloc(12);
-    strcpy(props.natparms, "Hello World");
+    //props.natparms ="parm=naton";
+    strcpy(props.natlibrary, "PLAIN");
+    strcpy(props.natprogram, "JSON");
 
     props.logpath = "/tmp/";
+    props.outputfile = "/tmp/rh4nOutput";
     //props.natsrcpath = "/opt/softwareag/fuser/";
     strcpy(props.username, "MyUSer");
 
