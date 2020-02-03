@@ -4,7 +4,7 @@
 
 #include "rh4n.h"
 
-int rh4nvarCreateNewInt(RH4nVarList *varlist, char *pgroupname, char *pname, int value) {
+int rh4nvarCreateNewInt(RH4nVarList *varlist, const char *pgroupname, const char *pname, int value) {
     int varlibret = 0;
     RH4nVarRef _refvar = RH4NVAR_REF_INIT;
 
@@ -15,7 +15,7 @@ int rh4nvarCreateNewInt(RH4nVarList *varlist, char *pgroupname, char *pname, int
     return(_rh4nvarCreateNewInt(&_refvar, value));
 }
 
-int rh4nvarCreateNewInt_m(RH4nVarList *varlist, char **pgroupnames, char *pname, int value) {
+int rh4nvarCreateNewInt_m(RH4nVarList *varlist, const char **pgroupnames, const char *pname, int value) {
     int varlibret = 0;
     RH4nVarRef _refvar = RH4NVAR_REF_INIT;
 
@@ -32,7 +32,7 @@ int _rh4nvarCreateNewInt(RH4nVarRef *ref, int value) {
 }
 
 
-int rh4nvarEditInt(RH4nVarList *varlist, char *pgroupname, char *pname, int value) {
+int rh4nvarEditInt(RH4nVarList *varlist, const char *pgroupname, const char *pname, int value) {
     RH4nVarRef _refvar = RH4NVAR_REF_INIT;
     int varlibret = 0;
 
@@ -42,7 +42,7 @@ int rh4nvarEditInt(RH4nVarList *varlist, char *pgroupname, char *pname, int valu
     return(RH4N_RET_OK);
 }
 
-int rh4nvarGetInt(RH4nVarList *varlist, char *pgroupname, char *pname, int *outbuff) {
+int rh4nvarGetInt(RH4nVarList *varlist, const char *pgroupname, const char *pname, int *outbuff) {
     RH4nVarRef _refvar = RH4NVAR_REF_INIT;
     int varlibret = 0;
 
@@ -52,15 +52,15 @@ int rh4nvarGetInt(RH4nVarList *varlist, char *pgroupname, char *pname, int *outb
     return(RH4N_RET_OK);
 }
 
-int rh4nvarCreateNewIntArray(RH4nVarList *varlist, char *pgroupname, char *pname, int dimensions, int length[3]) {
+int rh4nvarCreateNewIntArray(RH4nVarList *varlist, const char *pgroupname, const char *pname, int dimensions, int length[3]) {
     return(rh4nvarCreateNewArray(varlist, pgroupname, pname, dimensions, length, RH4NVARTYPEINTEGER));
 }
 
-int rh4nvarCreateNewIntArray_m(RH4nVarList *varlist, char **pgroupnames, char *pname, int dimensions, int length[3]) {
+int rh4nvarCreateNewIntArray_m(RH4nVarList *varlist, const char **pgroupnames, const char *pname, int dimensions, int length[3]) {
     return(rh4nvarCreateNewArray_m(varlist, pgroupnames, pname, dimensions, length, RH4NVARTYPEINTEGER));
 }
 
-int rh4nvarSetIntArrayEntry(RH4nVarList *varlist, char *pgroupname, char *pname, int index[3], int value) {
+int rh4nvarSetIntArrayEntry(RH4nVarList *varlist, const char *pgroupname, const char *pname, int index[3], int value) {
     RH4nVarRef _refvar = RH4NVAR_REF_INIT;
     RH4nVarObj *arrayentry = NULL;
     int varlibret = 0;
@@ -80,7 +80,7 @@ int rh4nvarSetIntArrayEntry_m(RH4nVarList *varlist, const char **pgroupname, con
 }
 
 
-int rh4nvarGetIntArrayEntry(RH4nVarList *varlist, char *pgroupname, char *pname, int index[3], int *outbuff) {
+int rh4nvarGetIntArrayEntry(RH4nVarList *varlist, const char *pgroupname, const char *pname, int index[3], int *outbuff) {
     RH4nVarRef _refvar = RH4NVAR_REF_INIT;
     RH4nVarObj *arrayentry = NULL;
     int varlibret = 0;

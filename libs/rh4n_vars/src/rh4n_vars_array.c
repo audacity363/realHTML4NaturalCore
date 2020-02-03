@@ -4,7 +4,7 @@
 
 #include "rh4n.h"
 
-int rh4nvarCreateNewArray(RH4nVarList *varlist, char *pgroupname, char *pname, int dimensions, int length[3], int vartype) {
+int rh4nvarCreateNewArray(RH4nVarList *varlist, const char *pgroupname, const char *pname, int dimensions, int length[3], int vartype) {
     int createret = 0;
     RH4nVarRef _refvar = RH4NVAR_REF_INIT;
 
@@ -21,7 +21,7 @@ int rh4nvarCreateNewArray(RH4nVarList *varlist, char *pgroupname, char *pname, i
     return(_rh4nvarCreateNewArray(&_refvar, dimensions, length, vartype));
 }
 
-int rh4nvarCreateNewArray_m(RH4nVarList *varlist, char **pgroupnames, char *pname, int dimensions, int length[3], int vartype) {
+int rh4nvarCreateNewArray_m(RH4nVarList *varlist, const char **pgroupnames, const char *pname, int dimensions, int length[3], int vartype) {
     int createret = 0;
     RH4nVarRef _refvar = RH4NVAR_REF_INIT;
 
@@ -169,7 +169,7 @@ int rh4nvarGetArrayDimension(RH4nVarObj *target, int *dimensions) {
     return(RH4N_RET_OK);
 }
 
-int rh4nvarGetArrayVarType(RH4nVarList *varlist, char *pgroupname, char *pname, int *vartype) {
+int rh4nvarGetArrayVarType(RH4nVarList *varlist, const char *pgroupname, const char *pname, int *vartype) {
     RH4nVarRef _refvar = RH4NVAR_REF_INIT;
     int rc = 0;
 
@@ -178,7 +178,7 @@ int rh4nvarGetArrayVarType(RH4nVarList *varlist, char *pgroupname, char *pname, 
     return(RH4N_RET_OK);
 }
 
-int rh4nvarExpandArray(RH4nVarList *varlist, char *pgroupname, char *pname, int dimensions, int length[3]) {
+int rh4nvarExpandArray(RH4nVarList *varlist, const char *pgroupname, const char *pname, int dimensions, int length[3]) {
     int varlibret = 0, current_dimensions = 0;
     RH4nVarRef _refvar = RH4NVAR_REF_INIT;
 
@@ -220,7 +220,7 @@ int rh4nvarSetArrayEntry_m(RH4nVarList *varlist, const char **pgroupname, const 
     RH4nVarObj *arrayentry = NULL;
     int varlibret = 0;
 
-    if((varlibret = rh4nvarGetRef_m(varlist, (char**)pgroupname, (char*)name, &_refvar)) != RH4N_RET_OK) { return(varlibret); }
+    if((varlibret = rh4nvarGetRef_m(varlist, pgroupname, name, &_refvar)) != RH4N_RET_OK) { return(varlibret); }
     if((varlibret = rh4nvarGetArrayEntry(&_refvar.var->var, index, &arrayentry)) != RH4N_RET_OK) { return(varlibret); }
 
     switch(arrayentry->type) {

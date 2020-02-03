@@ -4,7 +4,7 @@
 
 #include "rh4n.h"
 
-int rh4nvarCreateNewString(RH4nVarList *varlist, char *pgroupname, char *pname, char *value) {
+int rh4nvarCreateNewString(RH4nVarList *varlist, const char *pgroupname, const char *pname, char *value) {
     int varlibret = 0;
     RH4nVarRef _refvar = RH4NVAR_REF_INIT;
 
@@ -14,7 +14,7 @@ int rh4nvarCreateNewString(RH4nVarList *varlist, char *pgroupname, char *pname, 
     return(_rh4nvarCreateNewString(&_refvar, value));
 }
 
-int rh4nvarCreateNewString_m(RH4nVarList *varlist, char **pgroupnames, char *pname, char *value) {
+int rh4nvarCreateNewString_m(RH4nVarList *varlist, const char **pgroupnames, const char *pname, char *value) {
     int varlibret = 0;
     RH4nVarRef _refvar = RH4NVAR_REF_INIT;
 
@@ -30,7 +30,7 @@ int _rh4nvarCreateNewString(RH4nVarRef *ref, char *value) {
 }
 
 
-int rh4nvarEditString(RH4nVarList *varlist, char *pgroupname, char *pname, char *value) {
+int rh4nvarEditString(RH4nVarList *varlist, const char *pgroupname, const char *pname, char *value) {
     RH4nVarRef _refvar = RH4NVAR_REF_INIT;
     int varlibret = 0;
 
@@ -40,7 +40,7 @@ int rh4nvarEditString(RH4nVarList *varlist, char *pgroupname, char *pname, char 
     return(RH4N_RET_OK);
 }
 
-int rh4nvarGetString(RH4nVarList *varlist, char *pgroupname, char *pname, int bufflength, char *outbuff) {
+int rh4nvarGetString(RH4nVarList *varlist, const char *pgroupname, const char *pname, int bufflength, char *outbuff) {
     RH4nVarRef _refvar = RH4NVAR_REF_INIT;
     int varlibret = 0;
 
@@ -50,7 +50,7 @@ int rh4nvarGetString(RH4nVarList *varlist, char *pgroupname, char *pname, int bu
     return(RH4N_RET_OK);
 }
 
-int rh4nvarGetStringLength(RH4nVarList *varlist, char *pgroupname, char *pname, int *length) {
+int rh4nvarGetStringLength(RH4nVarList *varlist, const char *pgroupname, const char *pname, int *length) {
     RH4nVarRef _refvar = RH4NVAR_REF_INIT;
     int varlibret = 0;
 
@@ -60,15 +60,15 @@ int rh4nvarGetStringLength(RH4nVarList *varlist, char *pgroupname, char *pname, 
     return(RH4N_RET_OK);
 }
 
-int rh4nvarCreateNewStringArray(RH4nVarList *varlist, char *pgroupname, char *pname, int dimensions, int length[3]) {
+int rh4nvarCreateNewStringArray(RH4nVarList *varlist, const char *pgroupname, const char *pname, int dimensions, int length[3]) {
     return(rh4nvarCreateNewArray(varlist, pgroupname, pname, dimensions, length, RH4NVARTYPESTRING));
 }
 
-int rh4nvarCreateNewStringArray_m(RH4nVarList *varlist, char **pgroupname, char *pname, int dimensions, int length[3]) {
+int rh4nvarCreateNewStringArray_m(RH4nVarList *varlist, const char **pgroupname, const char *pname, int dimensions, int length[3]) {
     return(rh4nvarCreateNewArray_m(varlist, pgroupname, pname, dimensions, length, RH4NVARTYPESTRING));
 }
 
-int rh4nvarSetStringArrayEntry(RH4nVarList *varlist, char *pgroupname, char *pname, int index[3], char *value) {
+int rh4nvarSetStringArrayEntry(RH4nVarList *varlist, const char *pgroupname, const char *pname, int index[3], char *value) {
     RH4nVarRef _refvar = RH4NVAR_REF_INIT;
     RH4nVarObj *arrayentry = NULL;
     int varlibret = 0;
@@ -87,7 +87,7 @@ int rh4nvarSetStringArrayEntry_m(RH4nVarList *varlist, const char **pgroupname, 
     return(rh4nvarSetArrayEntry_m(varlist, pgroupname, pname, index, (void*)value));
 }
 
-int rh4nvarGetStringArrayEntry(RH4nVarList *varlist, char *pgroupname, char *pname, int index[3], int bufflength, char *outbuff) {
+int rh4nvarGetStringArrayEntry(RH4nVarList *varlist, const char *pgroupname, const char *pname, int index[3], int bufflength, char *outbuff) {
     RH4nVarRef _refvar = RH4NVAR_REF_INIT;
     RH4nVarObj *arrayentry = NULL;
     int varlibret = 0;
@@ -101,7 +101,7 @@ int rh4nvarGetStringArrayEntry(RH4nVarList *varlist, char *pgroupname, char *pna
     return(RH4N_RET_OK);
 }
 
-int rh4nvarGetStringLengthArrayEntry(RH4nVarList *varlist, char *pgroupname, char *pname, int index[3], int *length) {
+int rh4nvarGetStringLengthArrayEntry(RH4nVarList *varlist, const char *pgroupname, const char *pname, int index[3], int *length) {
     RH4nVarRef _refvar = RH4NVAR_REF_INIT;
     RH4nVarObj *arrayentry = NULL;
     int varlibret = 0;

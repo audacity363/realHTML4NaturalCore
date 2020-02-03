@@ -64,89 +64,89 @@ typedef char bool;
 //Public
 //Utils
 int rh4nvarInitList(RH4nVarList*);
-int rh4nvarGetRef(RH4nVarList*, char*, char*, RH4nVarRef*);
-int rh4nvarGetRef_m(RH4nVarList*, char**, char*, RH4nVarRef*);
-int rh4nvarExist(RH4nVarList*, char*, char*);
-int rh4nvarGroupExist(RH4nVarList*, char*);
-int rh4nvarGroupExist_m(RH4nVarList*, char**, char*);
-int rh4nvarGetVarType(RH4nVarList*, char*, char*, int*);
+int rh4nvarGetRef(RH4nVarList*, const char*, const char*, RH4nVarRef*);
+int rh4nvarGetRef_m(RH4nVarList*, const char**, const char*, RH4nVarRef*);
+int rh4nvarExist(RH4nVarList*, const char*, const char*);
+int rh4nvarGroupExist(RH4nVarList*, const char*);
+int rh4nvarGroupExist_m(RH4nVarList*, const char**, const char*);
+int rh4nvarGetVarType(RH4nVarList*, const char*, const char*, int*);
 //String
-int rh4nvarCreateNewString(RH4nVarList*, char*, char*, char*);
-int rh4nvarCreateNewString_m(RH4nVarList*, char**, char*, char*);
-int rh4nvarGetString(RH4nVarList*, char*, char*, int, char*);
-int rh4nvarGetStringLength(RH4nVarList*, char*, char*, int*);
-int rh4nvarEditString(RH4nVarList*, char*, char*, char*);
-int rh4nvarCreateNewStringArray(RH4nVarList*, char*, char*, int, int*);
-int rh4nvarCreateNewStringArray_m(RH4nVarList*, char**, char*, int, int*);
-int rh4nvarGetStringArrayEntry(RH4nVarList*, char*, char*, int*, int, char*);
-int rh4nvarSetStringArrayEntry(RH4nVarList*, char*, char*, int*, char*);
+int rh4nvarCreateNewString(RH4nVarList*, const char*, const char*, char*);
+int rh4nvarCreateNewString_m(RH4nVarList*, const char**, const char*, char*);
+int rh4nvarGetString(RH4nVarList*, const char*, const char*, int, char*);
+int rh4nvarGetStringLength(RH4nVarList*, const char*, const char*, int*);
+int rh4nvarEditString(RH4nVarList*, const char*, const char*, char*);
+int rh4nvarCreateNewStringArray(RH4nVarList*, const char*, const char*, int, int*);
+int rh4nvarCreateNewStringArray_m(RH4nVarList*, const char**, const char*, int, int*);
+int rh4nvarGetStringArrayEntry(RH4nVarList*, const char*, const char*, int*, int, char*);
+int rh4nvarSetStringArrayEntry(RH4nVarList*, const char*, const char*, int*, char*);
 int rh4nvarSetStringArrayEntry_m(RH4nVarList*, const char**, const char*, int*, char*);
-int rh4nvarGetStringLengthArrayEntry(RH4nVarList*, char*, char*, int*, int*);
+int rh4nvarGetStringLengthArrayEntry(RH4nVarList*, const char*, const char*, int*, int*);
 //UString
-int rh4nvarCreateNewUString(RH4nVarList*, char*, char*, wchar_t*);
-int rh4nvarGetUString(RH4nVarList*, char*, char*, int, wchar_t*);
-int rh4nvarGetUStringLength(RH4nVarList*, char*, char*, int*);
-int rh4nvarEditUString(RH4nVarList*, char*, char*, wchar_t*);
-int rh4nvarCreateNewUStringArray(RH4nVarList*, char*, char*, int, int*);
-int rh4nvarGetUStringArrayEntry(RH4nVarList*, char*, char*, int*, int, wchar_t*);
-int rh4nvarSetUStringArrayEntry(RH4nVarList*, char*, char*, int*, wchar_t*);
+int rh4nvarCreateNewUString(RH4nVarList*, const char*, const char*, wchar_t*);
+int rh4nvarGetUString(RH4nVarList*, const char*, const char*, int, wchar_t*);
+int rh4nvarGetUStringLength(RH4nVarList*, const char*, const char*, int*);
+int rh4nvarEditUString(RH4nVarList*, const char*, const char*, wchar_t*);
+int rh4nvarCreateNewUStringArray(RH4nVarList*, const char*, const char*, int, int*);
+int rh4nvarGetUStringArrayEntry(RH4nVarList*, const char*, const char*, int*, int, wchar_t*);
+int rh4nvarSetUStringArrayEntry(RH4nVarList*, const char*, const char*, int*, wchar_t*);
 int rh4nvarSetUStringArrayEntry_m(RH4nVarList*, const char**, const char*, int*, wchar_t*);
-int rh4nvarGetUStringLengthArrayEntry(RH4nVarList*, char*, char*, int*, int*);
+int rh4nvarGetUStringLengthArrayEntry(RH4nVarList*, const char*, const char*, int*, int*);
 //Bool
-int rh4nvarCreateNewBool(RH4nVarList*, char*, char*, bool);
-int rh4nvarCreateNewBool_m(RH4nVarList*, char**, char*, bool);
+int rh4nvarCreateNewBool(RH4nVarList*, const char*, const char*, bool);
+int rh4nvarCreateNewBool_m(RH4nVarList*, const char**, const char*, bool);
 int _rh4nvarCreateNewBool(RH4nVarRef*, bool);
-int rh4nvarEditBool(RH4nVarList*, char*, char*, bool);
-int rh4nvarGetBool(RH4nVarList*, char*, char*, bool*);
-int rh4nvarCreateNewBoolArray(RH4nVarList*, char*, char*, int, int*);
-int rh4nvarCreateNewBoolArray_m(RH4nVarList*, char**, char*, int, int*);
-int rh4nvarSetBoolArrayEntry(RH4nVarList*, char*, char*, int*, bool);
+int rh4nvarEditBool(RH4nVarList*, const char*, const char*, bool);
+int rh4nvarGetBool(RH4nVarList*, const char*, const char*, bool*);
+int rh4nvarCreateNewBoolArray(RH4nVarList*, const char*, const char*, int, int*);
+int rh4nvarCreateNewBoolArray_m(RH4nVarList*, const char**, const char*, int, int*);
+int rh4nvarSetBoolArrayEntry(RH4nVarList*, const char*, const char*, int*, bool);
 int rh4nvarSetBoolArrayEntry_m(RH4nVarList*, const char**, const char*, int*, bool);
-int rh4nvarGetBoolArrayEntry(RH4nVarList*, char*, char*, int*, bool*);
+int rh4nvarGetBoolArrayEntry(RH4nVarList*, const char*, const char*, int*, bool*);
 //Integer
-int rh4nvarCreateNewInt(RH4nVarList*, char*, char*, int);
-int rh4nvarCreateNewInt_m(RH4nVarList*, char**, char*, int);
+int rh4nvarCreateNewInt(RH4nVarList*, const char*, const char*, int);
+int rh4nvarCreateNewInt_m(RH4nVarList*, const char**, const char*, int);
 int _rh4nvarCreateNewInt(RH4nVarRef*, int);
-int rh4nvarEditInt(RH4nVarList*, char*, char*, int);
-int rh4nvarGetInt(RH4nVarList*, char*, char*, int*);
-int rh4nvarCreateNewIntArray(RH4nVarList*, char*, char*, int, int*);
-int rh4nvarCreateNewIntArray_m(RH4nVarList*, char**, char*, int, int*);
-int rh4nvarSetIntArrayEntry(RH4nVarList*, char*, char*, int*, int);
+int rh4nvarEditInt(RH4nVarList*, const char*, const char*, int);
+int rh4nvarGetInt(RH4nVarList*, const char*, const char*, int*);
+int rh4nvarCreateNewIntArray(RH4nVarList*, const char*, const char*, int, int*);
+int rh4nvarCreateNewIntArray_m(RH4nVarList*, const char**, const char*, int, int*);
+int rh4nvarSetIntArrayEntry(RH4nVarList*, const char*, const char*, int*, int);
 int rh4nvarSetIntArrayEntry_m(RH4nVarList*, const char**, const char*, int*, int);
-int rh4nvarGetIntArrayEntry(RH4nVarList*, char*, char*, int*, int*);
+int rh4nvarGetIntArrayEntry(RH4nVarList*, const char*, const char*, int*, int*);
 //Float
-int rh4nvarCreateNewFloat(RH4nVarList*, char*, char*, double);
-int rh4nvarCreateNewFloat_m(RH4nVarList*, char**, char*, double);
+int rh4nvarCreateNewFloat(RH4nVarList*, const char*, const char*, double);
+int rh4nvarCreateNewFloat_m(RH4nVarList*, const char**, const char*, double);
 int _rh4nvarCreateNewFloat(RH4nVarRef*, double);
-int rh4nvarEditFloat(RH4nVarList*, char*, char*, double);
-int rh4nvarGetFloat(RH4nVarList*, char*, char*, double*);
-int rh4nvarCreateNewFloatArray(RH4nVarList*, char*, char*, int, int*);
-int rh4nvarCreateNewFloatArray_m(RH4nVarList*, char**, char*, int, int*);
-int rh4nvarSetFloatArrayEntry(RH4nVarList*, char*, char*, int*, double);
+int rh4nvarEditFloat(RH4nVarList*, const char*, const char*, double);
+int rh4nvarGetFloat(RH4nVarList*, const char*, const char*, double*);
+int rh4nvarCreateNewFloatArray(RH4nVarList*, const char*, const char*, int, int*);
+int rh4nvarCreateNewFloatArray_m(RH4nVarList*, const char**, const char*, int, int*);
+int rh4nvarSetFloatArrayEntry(RH4nVarList*, const char*, const char*, int*, double);
 int rh4nvarSetFloatArrayEntry_m(RH4nVarList*, const char**, const char*, int*, double);
-int rh4nvarGetFloatArrayEntry(RH4nVarList*, char*, char*, int*, double*);
+int rh4nvarGetFloatArrayEntry(RH4nVarList*, const char*, const char*, int*, double*);
 //Group
-int rh4nvarCreateNewGroup(RH4nVarList*, char*);
-int rh4nvarCreateNewGroup_m(RH4nVarList*, char**, char*);
-int rh4nvarMoveVarToGroup(RH4nVarList*, char*, char*);
-int rh4nvarMoveVarToGroup_m(RH4nVarList*, char*, char**);
+int rh4nvarCreateNewGroup(RH4nVarList*, const char*);
+int rh4nvarCreateNewGroup_m(RH4nVarList*, const char**, const char*);
+int rh4nvarMoveVarToGroup(RH4nVarList*, const char*, const char*);
+int rh4nvarMoveVarToGroup_m(RH4nVarList*, const char*, const char**);
 
-int rh4nvarGetArrayVarType(RH4nVarList*, char*, char*, int*);
-int rh4nvarExpandArray(RH4nVarList*, char*, char*, int, int*);
+int rh4nvarGetArrayVarType(RH4nVarList*, const char*, const char*, int*);
+int rh4nvarExpandArray(RH4nVarList*, const char*, const char*, int, int*);
 //Free
 void rh4nvarFreeList(RH4nVarList*);
 //Dump
-int rh4nvarDumpToFile(RH4nVarList *varlist, char *filename);
+int rh4nvarDumpToFile(RH4nVarList *varlist, const char *filename);
 void rh4nvarDumpAppendToFile(int fileno, RH4nVarList *varlist);
 //Load
-int rh4nvarLoadFromFile(char*, RH4nVarList*);
+int rh4nvarLoadFromFile(const char*, RH4nVarList*);
 int rh4nvarLoadFromFileOffset(int, RH4nVarList*);
 
 //Private
 //Utils
-int rh4nvarCreatenewVariable(RH4nVarList*, char*, char*, int, RH4nVarRef*);
-int rh4nvarCreatenewVariable_m(RH4nVarList*, char**, char*, int, RH4nVarRef*);
-int rh4nvarSearchVarRef(RH4nVarEntry_t*, char*, RH4nVarRef*);
+int rh4nvarCreatenewVariable(RH4nVarList*, const char*, const char*, int, RH4nVarRef*);
+int rh4nvarCreatenewVariable_m(RH4nVarList*, const char**, const char*, int, RH4nVarRef*);
+int rh4nvarSearchVarRef(RH4nVarEntry_t*, const char*, RH4nVarRef*);
 void _rh4nvarmoveToGroup(RH4nVarList*, RH4nVarEntry_t*, RH4nVarEntry_t*);
 //String
 int _rh4nvarCreateNewString(RH4nVarRef*, char*);
@@ -162,8 +162,8 @@ int rh4nvarSetFloat(RH4nVarObj*, double);
 //Array
 int rh4nvarCheckDimLength(int, int*);
 int rh4nvarInitArray(RH4nVarObj*, int, int);
-int rh4nvarCreateNewArray(RH4nVarList*, char*, char*, int, int*, int);
-int rh4nvarCreateNewArray_m(RH4nVarList*, char**, char*, int, int*, int);
+int rh4nvarCreateNewArray(RH4nVarList*, const char*, const char*, int, int*, int);
+int rh4nvarCreateNewArray_m(RH4nVarList*, const char**, const char*, int, int*, int);
 int _rh4nvarCreateNewArray(RH4nVarRef*, int, int*, int);
 int rh4nvarGetArrayLength(RH4nVarObj*, int*);
 int rh4nvarGetArrayDimension(RH4nVarObj*, int*);

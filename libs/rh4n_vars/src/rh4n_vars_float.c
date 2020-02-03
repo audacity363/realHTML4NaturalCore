@@ -4,7 +4,7 @@
 
 #include "rh4n.h"
 
-int rh4nvarCreateNewFloat(RH4nVarList *varlist, char *pgroupname, char *pname, double value) {
+int rh4nvarCreateNewFloat(RH4nVarList *varlist, const char *pgroupname, const char *pname, double value) {
     int varlibret = 0;
     RH4nVarRef _refvar = RH4NVAR_REF_INIT;
 
@@ -15,7 +15,7 @@ int rh4nvarCreateNewFloat(RH4nVarList *varlist, char *pgroupname, char *pname, d
     return(_rh4nvarCreateNewFloat(&_refvar, value));
 }
 
-int rh4nvarCreateNewFloat_m(RH4nVarList *varlist, char **pgroupnames, char *pname, double value) {
+int rh4nvarCreateNewFloat_m(RH4nVarList *varlist, const char **pgroupnames, const char *pname, double value) {
     int varlibret = 0;
     RH4nVarRef _refvar = RH4NVAR_REF_INIT;
 
@@ -31,7 +31,7 @@ int _rh4nvarCreateNewFloat(RH4nVarRef *ref, double value) {
 }
 
 
-int rh4nvarEditFloat(RH4nVarList *varlist, char *pgroupname, char *pname, double value) {
+int rh4nvarEditFloat(RH4nVarList *varlist, const char *pgroupname, const char *pname, double value) {
     RH4nVarRef _refvar = RH4NVAR_REF_INIT;
     int varlibret = 0;
 
@@ -41,7 +41,7 @@ int rh4nvarEditFloat(RH4nVarList *varlist, char *pgroupname, char *pname, double
     return(RH4N_RET_OK);
 }
 
-int rh4nvarGetFloat(RH4nVarList *varlist, char *pgroupname, char *pname, double *outbuff) {
+int rh4nvarGetFloat(RH4nVarList *varlist, const char *pgroupname, const char *pname, double *outbuff) {
     RH4nVarRef _refvar = RH4NVAR_REF_INIT;
     int varlibret = 0;
 
@@ -51,15 +51,15 @@ int rh4nvarGetFloat(RH4nVarList *varlist, char *pgroupname, char *pname, double 
     return(RH4N_RET_OK);
 }
 
-int rh4nvarCreateNewFloatArray(RH4nVarList *varlist, char *pgroupname, char *pname, int dimensions, int length[3]) {
+int rh4nvarCreateNewFloatArray(RH4nVarList *varlist, const char *pgroupname, const char *pname, int dimensions, int length[3]) {
     return(rh4nvarCreateNewArray(varlist, pgroupname, pname, dimensions, length, RH4NVARTYPEFLOAT));
 }
 
-int rh4nvarCreateNewFloatArray_m(RH4nVarList *varlist, char **pgroupnames, char *pname, int dimensions, int length[3]) {
+int rh4nvarCreateNewFloatArray_m(RH4nVarList *varlist, const char **pgroupnames, const char *pname, int dimensions, int length[3]) {
     return(rh4nvarCreateNewArray_m(varlist, pgroupnames, pname, dimensions, length, RH4NVARTYPEFLOAT));
 }
 
-int rh4nvarSetFloatArrayEntry(RH4nVarList *varlist, char *pgroupname, char *pname, int index[3], double value) {
+int rh4nvarSetFloatArrayEntry(RH4nVarList *varlist, const char *pgroupname, const char *pname, int index[3], double value) {
     RH4nVarRef _refvar = RH4NVAR_REF_INIT;
     RH4nVarObj *arrayentry = NULL;
     int varlibret = 0;
@@ -78,7 +78,7 @@ int rh4nvarSetFloatArrayEntry_m(RH4nVarList *varlist, const char **pgroupname, c
     return(rh4nvarSetArrayEntry_m(varlist, pgroupname, pname, index, (void*)(&value)));
 }
 
-int rh4nvarGetFloatArrayEntry(RH4nVarList *varlist, char *pgroupname, char *pname, int index[3], double *outbuff) {
+int rh4nvarGetFloatArrayEntry(RH4nVarList *varlist, const char *pgroupname, const char *pname, int index[3], double *outbuff) {
     RH4nVarRef _refvar = RH4NVAR_REF_INIT;
     RH4nVarObj *arrayentry = NULL;
     int varlibret = 0;

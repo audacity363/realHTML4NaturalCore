@@ -14,9 +14,9 @@ RH4nVarEntry_t *rh4nv2nMatchNames(RH4nVarEntry_t *nat_set, RH4nLDAEntry_t *lda_s
     int varlibret = 0;
     
     if(groupname) {
-        if(rh4nvarGroupExist_m(varanker, parents.groups, groupname) == 0) {
+        if(rh4nvarGroupExist_m(varanker, (const char**)parents.groups, (const char*)groupname) == 0) {
         rh4n_log_debug(props->logging, "Creating group [%s]", groupname);
-            if((varlibret = rh4nvarCreateNewGroup_m(varanker, parents.groups, groupname)) != RH4N_RET_OK) { 
+            if((varlibret = rh4nvarCreateNewGroup_m(varanker, (const char**)parents.groups, (const char*)groupname)) != RH4N_RET_OK) { 
                 rh4n_log_error(props->logging, "Could not create group %s. Varlib error: %d", groupname, varlibret);
                 *error = varlibret; 
                 return(NULL); 
@@ -57,7 +57,7 @@ RH4nVarEntry_t *rh4nv2nMatchNames(RH4nVarEntry_t *nat_set, RH4nLDAEntry_t *lda_s
             tmp = cur_nat_set->next;
             if(parents.length > 1) {
                 rh4n_log_debug(props->logging, "Moving [%s] to group [%s]", cur_nat_set->name, parents.groups[parents.length-2]);
-                if((varlibret = rh4nvarMoveVarToGroup_m(varanker, cur_nat_set->name, parents.groups)) != RH4N_RET_OK) { 
+                if((varlibret = rh4nvarMoveVarToGroup_m(varanker, cur_nat_set->name, (const char**)parents.groups)) != RH4N_RET_OK) { 
                     rh4n_log_error(props->logging, "Error while moving %s to group %s", cur_nat_set->name, groupname);
                     *error = varlibret; 
                     return(NULL); 

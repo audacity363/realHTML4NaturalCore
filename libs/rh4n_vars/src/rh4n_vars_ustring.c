@@ -5,7 +5,7 @@
 
 #include "rh4n.h"
 
-int rh4nvarCreateNewUString(RH4nVarList *varlist, char *pgroupname, char *pname, wchar_t *value) {
+int rh4nvarCreateNewUString(RH4nVarList *varlist, const char *pgroupname, const char *pname, wchar_t *value) {
     int varlibret = 0;
     RH4nVarRef _refvar = RH4NVAR_REF_INIT;
 
@@ -18,7 +18,7 @@ int rh4nvarCreateNewUString(RH4nVarList *varlist, char *pgroupname, char *pname,
 }
 
 
-int rh4nvarEditUString(RH4nVarList *varlist, char *pgroupname, char *pname, wchar_t *value) {
+int rh4nvarEditUString(RH4nVarList *varlist, const char *pgroupname, const char *pname, wchar_t *value) {
     RH4nVarRef _refvar = RH4NVAR_REF_INIT;
     int varlibret = 0;
 
@@ -28,7 +28,7 @@ int rh4nvarEditUString(RH4nVarList *varlist, char *pgroupname, char *pname, wcha
     return(RH4N_RET_OK);
 }
 
-int rh4nvarGetUString(RH4nVarList *varlist, char *pgroupname, char *pname, int bufflength, wchar_t *outbuff) {
+int rh4nvarGetUString(RH4nVarList *varlist, const char *pgroupname, const char *pname, int bufflength, wchar_t *outbuff) {
     RH4nVarRef _refvar = RH4NVAR_REF_INIT;
     int varlibret = 0;
 
@@ -38,7 +38,7 @@ int rh4nvarGetUString(RH4nVarList *varlist, char *pgroupname, char *pname, int b
     return(RH4N_RET_OK);
 }
 
-int rh4nvarGetUStringLength(RH4nVarList *varlist, char *pgroupname, char *pname, int *length) {
+int rh4nvarGetUStringLength(RH4nVarList *varlist, const char *pgroupname, const char *pname, int *length) {
     RH4nVarRef _refvar = RH4NVAR_REF_INIT;
     int varlibret = 0;
 
@@ -48,11 +48,11 @@ int rh4nvarGetUStringLength(RH4nVarList *varlist, char *pgroupname, char *pname,
     return(RH4N_RET_OK);
 }
 
-int rh4nvarCreateNewUStringArray(RH4nVarList *varlist, char *pgroupname, char *pname, int dimensions, int length[3]) {
+int rh4nvarCreateNewUStringArray(RH4nVarList *varlist, const char *pgroupname, const char *pname, int dimensions, int length[3]) {
     return(rh4nvarCreateNewArray(varlist, pgroupname, pname, dimensions, length, RH4NVARTYPEUSTRING));
 }
 
-int rh4nvarSetUStringArrayEntry(RH4nVarList *varlist, char *pgroupname, char *pname, int index[3], wchar_t *value) {
+int rh4nvarSetUStringArrayEntry(RH4nVarList *varlist, const char *pgroupname, const char *pname, int index[3], wchar_t *value) {
     RH4nVarRef _refvar = RH4NVAR_REF_INIT;
     RH4nVarObj *arrayentry = NULL;
     int varlibret = 0;
@@ -66,7 +66,7 @@ int rh4nvarSetUStringArrayEntry(RH4nVarList *varlist, char *pgroupname, char *pn
     return(RH4N_RET_OK);
 }
 
-int rh4nvarGetUStringArrayEntry(RH4nVarList *varlist, char *pgroupname, char *pname, int index[3], int bufflength, wchar_t *outbuff) {
+int rh4nvarGetUStringArrayEntry(RH4nVarList *varlist, const char *pgroupname, const char *pname, int index[3], int bufflength, wchar_t *outbuff) {
     RH4nVarRef _refvar = RH4NVAR_REF_INIT;
     RH4nVarObj *arrayentry = NULL;
     int varlibret = 0;
@@ -80,7 +80,7 @@ int rh4nvarGetUStringArrayEntry(RH4nVarList *varlist, char *pgroupname, char *pn
     return(RH4N_RET_OK);
 }
 
-int rh4nvarGetUStringLengthArrayEntry(RH4nVarList *varlist, char *pgroupname, char *pname, int index[3], int *length) {
+int rh4nvarGetUStringLengthArrayEntry(RH4nVarList *varlist, const char *pgroupname, const char *pname, int index[3], int *length) {
     RH4nVarRef _refvar = RH4NVAR_REF_INIT;
     RH4nVarObj *arrayentry = NULL;
     int varlibret = 0;

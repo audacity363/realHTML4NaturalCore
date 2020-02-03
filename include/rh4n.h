@@ -65,7 +65,7 @@ typedef struct {
 
     RH4nLogrule *logging;
 
-    char username[1000];
+    char username[33];
     uint8_t mode;
 
 } RH4nProperties;

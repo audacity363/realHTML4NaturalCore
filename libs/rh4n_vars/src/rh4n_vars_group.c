@@ -4,20 +4,20 @@
 
 #include "rh4n.h"
 
-int rh4nvarCreateNewGroup(RH4nVarList *varlist, char *pgroupname) {
+int rh4nvarCreateNewGroup(RH4nVarList *varlist, const char *pgroupname) {
     RH4nVarRef _refvar = RH4NVAR_REF_INIT;
 
     return(rh4nvarCreatenewVariable(varlist, NULL, pgroupname, RH4NVARTYPEGROUP, &_refvar));
 }
 
-int rh4nvarCreateNewGroup_m(RH4nVarList *varlist, char **pparentgroups, char *pgroupname) {
+int rh4nvarCreateNewGroup_m(RH4nVarList *varlist, const char **pparentgroups, const char *pgroupname) {
     RH4nVarRef _refvar = RH4NVAR_REF_INIT;
     
     return(rh4nvarCreatenewVariable_m(varlist, pparentgroups, pgroupname, RH4NVARTYPEGROUP, &_refvar));
 }
 
 
-int rh4nvarMoveVarToGroup(RH4nVarList *varlist, char *pvarname, char *pgroupname) {
+int rh4nvarMoveVarToGroup(RH4nVarList *varlist, const char *pvarname, const char *pgroupname) {
     RH4nVarRef _groupref = RH4NVAR_REF_INIT, _varref = RH4NVAR_REF_INIT;
     int varlibret = 0;
 
@@ -31,7 +31,7 @@ int rh4nvarMoveVarToGroup(RH4nVarList *varlist, char *pvarname, char *pgroupname
     return(RH4N_RET_OK);
 }
 
-int rh4nvarMoveVarToGroup_m(RH4nVarList *varlist, char *pvarname, char **pgroupnames) {
+int rh4nvarMoveVarToGroup_m(RH4nVarList *varlist, const char *pvarname, const char **pgroupnames) {
     RH4nVarRef _refgrp = RH4NVAR_REF_INIT, _refvar = RH4NVAR_REF_INIT;
     RH4nVarEntry_t *forkanker = NULL;
     int i = 0, varlibret = 0;
@@ -78,7 +78,7 @@ void _rh4nvarmoveToGroup(RH4nVarList *varlist, RH4nVarEntry_t *targetgrp, RH4nVa
     }
 }
 
-int rh4nvarGroupExist(RH4nVarList *varlist, char *pgroupname) {
+int rh4nvarGroupExist(RH4nVarList *varlist, const char *pgroupname) {
     RH4nVarRef _refvar = RH4NVAR_REF_INIT;
 
     if(rh4nvarGetRef(varlist, NULL, pgroupname, &_refvar) != RH4N_RET_OK) return(0);
@@ -86,7 +86,7 @@ int rh4nvarGroupExist(RH4nVarList *varlist, char *pgroupname) {
     return(1);
 }
 
-int rh4nvarGroupExist_m(RH4nVarList *varlist, char **parentgroups, char *pgroupname) {
+int rh4nvarGroupExist_m(RH4nVarList *varlist, const char **parentgroups, const char *pgroupname) {
     RH4nVarRef _refvar = RH4NVAR_REF_INIT;
 
     if(rh4nvarGetRef_m(varlist, parentgroups, pgroupname, &_refvar) != RH4N_RET_OK) return(0);

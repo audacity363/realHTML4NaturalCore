@@ -6,7 +6,7 @@
 
 #include "rh4n.h"
 
-int rh4nvarDumpToFile(RH4nVarList *varlist, char *filename) {
+int rh4nvarDumpToFile(RH4nVarList *varlist, const char *filename) {
     int outputfileFD = -1, endofList = RH4NVAR_END_OF_LIST;
 
     if((outputfileFD = open(filename, O_WRONLY)) < 0) {

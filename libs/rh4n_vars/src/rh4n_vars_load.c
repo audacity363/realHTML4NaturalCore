@@ -6,7 +6,7 @@
 
 #include "rh4n.h"
 
-int rh4nvarLoadFromFile(char *filename, RH4nVarList *varlist) {
+int rh4nvarLoadFromFile(const char *filename, RH4nVarList *varlist) {
     int inputfile = -1, ret = 0;
 
     if((inputfile = open(filename, O_RDONLY)) < 0) {

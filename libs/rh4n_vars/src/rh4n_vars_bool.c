@@ -4,7 +4,7 @@
 
 #include "rh4n.h"
 
-int rh4nvarCreateNewBool(RH4nVarList *varlist, char *pgroupname, char *pname, bool value) {
+int rh4nvarCreateNewBool(RH4nVarList *varlist, const char *pgroupname, const char *pname, bool value) {
     int varlibret = 0;
     RH4nVarRef _refvar = RH4NVAR_REF_INIT;
 
@@ -15,7 +15,7 @@ int rh4nvarCreateNewBool(RH4nVarList *varlist, char *pgroupname, char *pname, bo
 
 }
 
-int rh4nvarCreateNewBool_m(RH4nVarList *varlist, char **pgroupnames, char *pname, bool value) {
+int rh4nvarCreateNewBool_m(RH4nVarList *varlist, const char **pgroupnames, const char *pname, bool value) {
     int varlibret = 0;
     RH4nVarRef _refvar = RH4NVAR_REF_INIT;
 
@@ -31,7 +31,7 @@ int _rh4nvarCreateNewBool(RH4nVarRef *ref, bool value) {
 }
 
 
-int rh4nvarEditBool(RH4nVarList *varlist, char *pgroupname, char *pname, bool value) {
+int rh4nvarEditBool(RH4nVarList *varlist, const char *pgroupname, const char *pname, bool value) {
     RH4nVarRef _refvar = RH4NVAR_REF_INIT;
     int varlibret = 0;
 
@@ -41,7 +41,7 @@ int rh4nvarEditBool(RH4nVarList *varlist, char *pgroupname, char *pname, bool va
     return(RH4N_RET_OK);
 }
 
-int rh4nvarGetBool(RH4nVarList *varlist, char *pgroupname, char *pname, bool *outbuff) {
+int rh4nvarGetBool(RH4nVarList *varlist, const char *pgroupname, const char *pname, bool *outbuff) {
     RH4nVarRef _refvar = RH4NVAR_REF_INIT;
     int varlibret = 0;
 
@@ -51,15 +51,15 @@ int rh4nvarGetBool(RH4nVarList *varlist, char *pgroupname, char *pname, bool *ou
     return(RH4N_RET_OK);
 }
 
-int rh4nvarCreateNewBoolArray(RH4nVarList *varlist, char *pgroupname, char *pname, int dimensions, int length[3]) {
+int rh4nvarCreateNewBoolArray(RH4nVarList *varlist, const char *pgroupname, const char *pname, int dimensions, int length[3]) {
     return(rh4nvarCreateNewArray(varlist, pgroupname, pname, dimensions, length, RH4NVARTYPEBOOLEAN));
 }
 
-int rh4nvarCreateNewBoolArray_m(RH4nVarList *varlist, char **pgroupnames, char *pname, int dimensions, int length[3]) {
+int rh4nvarCreateNewBoolArray_m(RH4nVarList *varlist, const char **pgroupnames, const char *pname, int dimensions, int length[3]) {
     return(rh4nvarCreateNewArray_m(varlist, pgroupnames, pname, dimensions, length, RH4NVARTYPEBOOLEAN));
 }
 
-int rh4nvarSetBoolArrayEntry(RH4nVarList *varlist, char *pgroupname, char *pname, int index[3], bool value) {
+int rh4nvarSetBoolArrayEntry(RH4nVarList *varlist, const char *pgroupname, const char *pname, int index[3], bool value) {
     RH4nVarRef _refvar = RH4NVAR_REF_INIT;
     RH4nVarObj *arrayentry = NULL;
     int varlibret = 0;
@@ -78,7 +78,7 @@ int rh4nvarSetBoolArrayEntry_m(RH4nVarList *varlist, const char **pgroupname, co
     return(rh4nvarSetArrayEntry_m(varlist, pgroupname, pname, index, (void*)(&value)));
 }
 
-int rh4nvarGetBoolArrayEntry(RH4nVarList *varlist, char *pgroupname, char *pname, int index[3], bool *outbuff) {
+int rh4nvarGetBoolArrayEntry(RH4nVarList *varlist, const char *pgroupname, const char *pname, int index[3], bool *outbuff) {
     RH4nVarRef _refvar = RH4NVAR_REF_INIT;
     RH4nVarObj *arrayentry = NULL;
     int varlibret = 0;
