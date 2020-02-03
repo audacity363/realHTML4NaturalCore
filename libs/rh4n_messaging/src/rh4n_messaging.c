@@ -42,7 +42,7 @@ int rh4n_messaging_writeToSocket(int sendSocket, void *data, int length, RH4nPro
         return(-1);
     }
 
-    rh4n_log_develop(props->logging, "Written %d bytes to socket [%d]", bytesWritten, sendSocket);
+    //rh4n_log_develop(props->logging, "Written %d bytes to socket [%d]", bytesWritten, sendSocket);
     return(bytesWritten);
 }
 
@@ -57,7 +57,7 @@ int rh4n_messaging_readFromSocket(int recvSocket, void *data, int length, RH4nPr
         return(-1);
     }
 
-    rh4n_log_develop(props->logging, "Read %d bytes from socket [%d]", bytesRead, recvSocket);
+    //rh4n_log_develop(props->logging, "Read %d bytes from socket [%d]", bytesRead, recvSocket);
 
     return(bytesRead);
 }

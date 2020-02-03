@@ -1,6 +1,8 @@
 #ifndef RH4N_STD
 #define RH4N_STD
 
+#include <stdint.h>
+
 #include "natuser.h"
 #include "natni.h"
 #include "rh4n_vars.h"
@@ -42,6 +44,10 @@
 #define RH4N_RET_NO_USER 33
 #define RH4N_RET_FILE_ERR 34
 
+#define RH4N_MODE_PLAIN 0
+#define RH4N_MODE_WS 1
+
+#define RH4N_CHECKERROR(function) if(function < 0) { return(-1); }
 
 typedef struct {
     char natlibrary[NNI_LEN_LIBRARY+1];
@@ -60,6 +66,7 @@ typedef struct {
     RH4nLogrule *logging;
 
     char username[1000];
+    uint8_t mode;
 
 } RH4nProperties;
 

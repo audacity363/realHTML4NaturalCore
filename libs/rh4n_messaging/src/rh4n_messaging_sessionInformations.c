@@ -22,7 +22,8 @@ int rh4n_messaging_sendSessionInformations(int sendSocket, RH4nProperties *props
         {"srcPath", &props->natsrcpath, -1},
         {"logpath", &props->logpath, -1},
         {"loglevel", &props->i_loglevel, sizeof(props->i_loglevel)},
-        {"username", props->username, strlen(props->username)}
+        {"username", props->username, strlen(props->username)},
+        {"outputfile", &props->outputfile, -1}
     };
     uint8_t i = 0;
     uint32_t length = 0;
@@ -66,7 +67,8 @@ int rh4n_messaging_recvSessionInformations(int recvSocket, RH4nProperties *props
         {"srcPath", &props->natsrcpath, -1},
         {"logpath", &props->logpath, -1},
         {"loglevel", &props->i_loglevel, sizeof(props->i_loglevel)},
-        {"username", &props->username, sizeof(props->username)}
+        {"username", &props->username, sizeof(props->username)},
+        {"outputfile", &props->outputfile, -1}
     };
     RH4nMessageingHeader_t header; memset(&header, 0x00, sizeof(header));
     uint8_t i = 0;
