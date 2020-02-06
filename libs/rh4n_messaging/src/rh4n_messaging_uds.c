@@ -31,12 +31,12 @@ int rh4n_messaging_createUDSServer(const char *path, uint16_t flags, RH4nPropert
         }
     }
     
-    if((serverSocket = socket(AF_LOCAL, SOCK_STREAM, 0)) < 0) {
+    if((serverSocket = socket(AF_UNIX, SOCK_STREAM, 0)) < 0) {
         rh4n_log_fatal(props->logging, "Could not create new socket - %s", strerror(errno));
         return(-1);
     }
 
-    addr.sun_family = AF_LOCAL;
+    addr.sun_family = AF_UNIX;
     strcpy(addr.sun_path, path);
 
     if(bind(serverSocket, (struct sockaddr*)&addr, sizeof(addr)) < 0) {
@@ -51,7 +51,10 @@ int rh4n_messaging_createUDSServer(const char *path, uint16_t flags, RH4nPropert
 
     if((flags & RH4NLIBMESSAGINGFLAG_NONBLOCKING)) {
         socketOptions = fcntl(serverSocket, F_GETFL);
-        fcntl(serverSocket, F_SETFL, socketOptions | O_NONBLOCK);
+        if(fcntl(serverSocket, F_SETFL, socketOptions | O_NONBLOCK) < 0) {
+            rh4n_log_fatal(props->logging, "Could not set nonblocking status on socket");
+            return(-1);
+        }
     }
 
     return(serverSocket);
@@ -62,9 +65,21 @@ int rh4n_messaging_waitForClient(int serverSocket, RH4nProperties *props) {
     int clientSocket = 0;
 
     //We don't need the client informations here
-    if((clientSocket = accept(serverSocket, NULL, NULL)) > -1 ) {
+    //rh4n_log_develop(props->logging, "Waiting on %d for new client", serverSocket);
+    errno = 0;
+    clientSocket = accept(serverSocket, NULL, 0);
+    //rh4n_log_develop(props->logging, "Returncode of accept: [%d] - errno: %d", clientSocket, errno);
+
+    if(clientSocket > 0) {
         return(clientSocket);
     }
+
+#ifdef __xlc__
+    //Bug on xlc where errno does not get set to EWOULDBLOCK
+    /*if(clientSocket < 0 && errno == 0) {
+        return(-2);
+    }*/
+#endif
 
     if(errno == EWOULDBLOCK) {
         return(-2);
@@ -89,12 +104,12 @@ int rh4n_messaging_connectToUDSServer(const char *path, RH4nProperties *props) {
         return(-1);
     }
 
-    if((clientSocket = socket(PF_LOCAL, SOCK_STREAM, 0)) < 0) {
+    if((clientSocket = socket(AF_UNIX, SOCK_STREAM, 0)) < 0) {
         rh4n_log_fatal(props->logging, "Could not create new socket - %s", strerror(errno));
         return(-1);
     }
 
-    address.sun_family = AF_LOCAL;
+    address.sun_family = AF_UNIX;
     strcpy(address.sun_path, path);
 
     if(connect(clientSocket, (struct sockaddr*)&address, sizeof(address)) < 0) {

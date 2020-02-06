@@ -13,7 +13,7 @@
 
 int main(int argc, char *argv[]) {
     struct stat fileStatus;
-    int udsClient = 0, initRet = 0;
+    int udsClient = -1, initRet = 0;
     RH4nProperties props; memset(&props, 0x00, sizeof(props));
 
     if(argc != 2) {
@@ -21,7 +21,7 @@ int main(int argc, char *argv[]) {
         return(-1);
     }
 
-    if(access(argv[1], (R_OK | W_OK)) < 0) {
+    /*if(access(argv[1], (R_OK | W_OK)) < 0) {
         fprintf(stderr, "Could not access file [%s] - %s\n", argv[1], strerror(errno));
         return(-1);
     }
@@ -34,7 +34,7 @@ int main(int argc, char *argv[]) {
     if(!(S_ISSOCK(fileStatus.st_mode))) {
         fprintf(stderr, "File [%s] is not a socket file\n", argv[1]);
         return(-1);
-    }
+    }*/
    
     //TODO; parse the Loglevel from arguments
     if((props.logging = rh4nLoggingCreateStreamingRule("", "", RH4N_DEVELOP, "")) == NULL) {
@@ -42,9 +42,36 @@ int main(int argc, char *argv[]) {
         return(-1);
     }
 
-    if((udsClient = rh4n_messaging_connectToUDSServer(argv[1], &props)) < 0) {
-        return(-1);
+    int udsServer = 0;
+    if((udsServer = rh4n_messaging_createUDSServer(argv[1], RH4NLIBMESSAGINGFLAG_NONBLOCKING, &props)) < 0) {
+        exit(1);
     }
+
+    rh4n_log_debug(props.logging, "Waiting for a new client.");
+    int i = 0;
+    for(; i < 500000; i++) {
+        udsClient = rh4n_messaging_waitForClient(udsServer, &props);
+        if(udsClient > 0) {
+            rh4n_log_debug(props.logging, "Got new client %d", udsClient);
+            break;
+        } else if(udsClient == -2) {
+            //rh4n_log_debug(props.logging, "No client on socket. Sleeping");
+            usleep(10);
+            continue;
+        } else if(udsClient == -1) {
+            rh4n_log_fatal(props.logging, "Could not wait for new client");
+            exit(1);
+        }
+    }
+    if(udsClient < 0) {
+        rh4n_log_fatal(props.logging, "Timeout while waiting for a new client");
+        exit(1);
+    }
+
+
+    /*if((udsClient = rh4n_messaging_connectToUDSServer(argv[1], &props)) < 0) {
+        return(-1);
+    }*/
 
     RH4N_CHECKERROR(rh4n_main_loadSessionInformations(&props, udsClient));
     

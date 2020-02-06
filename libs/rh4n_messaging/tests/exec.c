@@ -29,6 +29,15 @@ int main() {
     rh4nUtilsPrintProperties(&props);
 
     int server = rh4n_messaging_createUDSServer("/tmp/rh4nTestUDSS", RH4NLIBMESSAGINGFLAG_OVERRIDE | RH4NLIBMESSAGINGFLAG_NONBLOCKING, &props);
+    
+    int pid = fork();
+    if(pid == 0) {
+        close(server);
+        sleep(3);
+        execl("./bin/tests/messaging_client", "./bin/tests/messaging_client", NULL);
+        exit(0);
+    }
+
     rh4n_log_develop(props.logging, "Waiting for client on server [%d]...", server);
     int client = 0;
     int i = 0;
@@ -42,12 +51,12 @@ int main() {
             rh4n_log_develop(props.logging, "Error waiting for client");
             exit(1);
         } else if(client > 0) {
-            rh4n_log_develop(props.logging, "God new client %d", client);
+            rh4n_log_develop(props.logging, "Got new client %d", client);
             break;
         }
 
     }
-    rh4n_log_develop(props.logging, "God client: [%d]", client);
+    rh4n_log_develop(props.logging, "Got client: [%d]", client);
 
     rh4n_messaging_sendSessionInformations(client, &props);
 
@@ -55,4 +64,3 @@ int main() {
 
     rh4n_messaging_sendVarlist(client, &props.bodyvars, &props);
 }
-
