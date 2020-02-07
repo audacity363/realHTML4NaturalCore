@@ -65,6 +65,15 @@ int main(int argc, char *argv[]) {
             exit(1);
         }
     }
+    if(udsClient < 0) {
+        rh4n_log_fatal(props.logging, "Timeout while waiting for a new client");
+        exit(1);
+    }
+
+
+    /*if((udsClient = rh4n_messaging_connectToUDSServer(argv[1], &props)) < 0) {
+        return(-1);
+    }*/
 
     RH4N_CHECKERROR(rh4n_main_loadSessionInformations(&props, udsClient));
     
