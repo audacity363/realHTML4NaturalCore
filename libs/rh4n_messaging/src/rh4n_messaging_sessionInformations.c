@@ -16,6 +16,7 @@ struct RH4nMessagingLookup {
 
 int rh4n_messaging_sendSessionInformations(int sendSocket, RH4nProperties *props) {
     struct RH4nMessagingLookup lookup[] = {
+        {"httpreqtype", props->httpreqtype, strlen(props->httpreqtype)},
         {"library", props->natlibrary, strlen(props->natlibrary)},
         {"program", props->natprogram, strlen(props->natprogram)},
         {"parms", &props->natparms, -1},
@@ -61,6 +62,7 @@ int rh4n_messaging_sendSessionInformations(int sendSocket, RH4nProperties *props
 
 int rh4n_messaging_recvSessionInformations(int recvSocket, RH4nProperties *props) {
     struct RH4nMessagingLookup lookup[] = {
+        {"httpreqtype", props->httpreqtype, sizeof(props->httpreqtype)},
         {"library", props->natlibrary, sizeof(props->natlibrary)},
         {"program", props->natprogram, sizeof(props->natprogram)},
         {"parms", &props->natparms, -1},

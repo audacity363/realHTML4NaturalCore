@@ -1,14 +1,14 @@
-#CC = /usr/vac/bin/xlc
-CC = /usr/bin/gcc
+CC = /usr/vac/bin/xlc
+#CC = /usr/bin/gcc
 AR = /usr/bin/ar
 
 #XLC:
-#LFLAGS1_SO = -G
-#LFLAGS2_SO = 
+LFLAGS1_SO = -G
+LFLAGS2_SO = 
 
 #GCC:
-LFLAGS1_SO = -shared 
-LFLAGS2_SO = 
+#LFLAGS1_SO = -shared 
+#LFLAGS2_SO = 
 
 INCLUDE = -I./include/ \
 		  -I./libs/rh4n_utils/include \
@@ -26,16 +26,16 @@ LIBS = -L./bin/libs \
 	   -lrh4njsongenerator -ldl
 
 #XLC:
-#CARGS1 = -g -c -fpic $(INCLUDE)
-#CARGS2 = 
-#CARGS_SO = -c -g -fpic $(INCLUDE)
-
-#GCC:
-CARGS1 = -g -c -Wall -fpic $(INCLUDE)
-#Save preprocessor and assembly files 
-#CARGS1 = -g -c -Wall -fpic $(INCLUDE) -save-temps=obj
+CARGS1 = -g -c -fpic $(INCLUDE)
 CARGS2 = 
 CARGS_SO = -c -g -fpic $(INCLUDE)
+
+#GCC:
+#CARGS1 = -g -c -Wall -fpic $(INCLUDE)
+#Save preprocessor and assembly files 
+#CARGS1 = -g -c -Wall -fpic $(INCLUDE) -save-temps=obj
+#CARGS2 = 
+#CARGS_SO = -c -g -fpic $(INCLUDE)
 
 LIBOUTPUT = ./bin/libs/
 TESTOUTPUT = ./bin/tests/
@@ -74,7 +74,7 @@ help:
 	@printf "\tall: Compiles everything\n"
 
 
-all: utils logging vars var2name ldaparser natuserlib natcaller
+all: utils logging vars var2name ldaparser messaging natuserlib natcaller
 	@printf "You find the binarys under ./bin\n"
 
 tests_pre:
@@ -349,9 +349,11 @@ messaging_clean:
 messaging_tests: messaging tests_pre
 	@printf "Building messaging tests\n"
 	@printf "CC $(MESSAGING_SRC)/../tests/server.c => $(TESTOUTPUT)/messaging_server\n"
-	@$(CC) -Wall -g $(MESSAGING_SRC)/../tests/server.c -o $(TESTOUTPUT)/messaging_server $(INCLUDE) $(LIBS)
+	@$(CC) -g $(MESSAGING_SRC)/../tests/server.c -o $(TESTOUTPUT)/messaging_server $(INCLUDE) $(LIBS)
 	@printf "CC $(MESSAGING_SRC)/../tests/client.c => $(TESTOUTPUT)/messaging_client\n"
-	@$(CC) -Wall -g $(MESSAGING_SRC)/../tests/client.c -o $(TESTOUTPUT)/messaging_client $(INCLUDE) $(LIBS)
+	@$(CC) -g $(MESSAGING_SRC)/../tests/client.c -o $(TESTOUTPUT)/messaging_client $(INCLUDE) $(LIBS)
+	@printf "CC $(MESSAGING_SRC)/../tests/exec.c => $(TESTOUTPUT)/messaging_exec\n"
+	@$(CC) -g $(MESSAGING_SRC)/../tests/exec.c -o $(TESTOUTPUT)/messaging_exec $(INCLUDE) $(LIBS)
 
 
 #                         +-----------------+
