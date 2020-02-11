@@ -28,6 +28,7 @@ void rh4nvarPrintUString(RH4nVarObj*, RH4nProperties*, int);
 void rh4nvarPrintBool(RH4nVarObj*, RH4nProperties*, int);
 void rh4nvarPrintInt(RH4nVarObj*, RH4nProperties*, int);
 void rh4nvarPrintFloat(RH4nVarObj*, RH4nProperties*, int);
+void rh4nvarPrintNull(RH4nVarObj *variable, RH4nProperties *props, int outputfile);
 void rh4nvarPrintJSONArray(RH4nVarObj*, int, int, RH4nProperties*, FILE*);
 void rh4nvarPrintJSONArrayDim(RH4nVarObj*, int, int, RH4nProperties*, FILE*);
 bool checkArrayGroup(RH4nVarEntry_t*);

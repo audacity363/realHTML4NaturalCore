@@ -63,6 +63,11 @@ int rh4nnatPutParms(RH4nVarList *varlist, WORD nparms, void *parmhandle, RH4nVar
             continue;
         }
 
+        if(_refvar.var->var.type == RH4NVARTYPENULL) {
+            rh4n_log_info(parms->props->logging, "Found variable with type null. Ignoring");
+            continue;
+        }
+
         rh4n_log_debug(parms->props->logging, "try to set variable %s.%s...", groupname, pos.parm_positions[i].varname);
         
         for(x=0; x < callbacksize; x++)  {

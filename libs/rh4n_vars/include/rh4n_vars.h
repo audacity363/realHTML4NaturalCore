@@ -43,6 +43,7 @@ typedef char bool;
 #define RH4NVARTYPEBOOLEAN 5
 #define RH4NVARTYPEGROUP   6
 #define RH4NVARTYPEARRAY   7
+#define RH4NVARTYPENULL    8
 
 #define RH4NVAR_CHECKVARLIST(list) if(!list) { return(RH4N_RET_VAR_PTR_ERR); }
 #define RH4NVAR_CHECKVARANKER(list) if(!list->anker) { return(RH4N_RET_VAR_PTR_ERR); }
@@ -125,6 +126,9 @@ int rh4nvarCreateNewFloatArray_m(RH4nVarList*, const char**, const char*, int, i
 int rh4nvarSetFloatArrayEntry(RH4nVarList*, const char*, const char*, int*, double);
 int rh4nvarSetFloatArrayEntry_m(RH4nVarList*, const char**, const char*, int*, double);
 int rh4nvarGetFloatArrayEntry(RH4nVarList*, const char*, const char*, int*, double*);
+//Null
+int rh4nvarCreateNewNull(RH4nVarList*, const char**, const char*);
+int rh4nvarCreateNewNullArray_m(RH4nVarList*, const char**, const char*, int, int*);
 //Group
 int rh4nvarCreateNewGroup(RH4nVarList*, const char*);
 int rh4nvarCreateNewGroup_m(RH4nVarList*, const char**, const char*);

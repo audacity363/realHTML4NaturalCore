@@ -16,11 +16,22 @@
 
 bool rh4njsonCheckIfJSONArray(RH4nVarEntry_t *target, RH4nProperties *props, short ignoreGRP) {
     RH4nVarEntry_t *hptr = NULL;
+    int lastDimension = -1, currentDimension = -1;
 
     for(hptr = target; hptr != NULL; hptr = hptr->next) {
         rh4n_log_debug(props->logging, "Checking [%s]", hptr->name);
         if(hptr->var.type == RH4NVARTYPEGROUP && ignoreGRP == 1) {
             if(rh4njsonCheckIfJSONArray(hptr->nextlvl, props, ignoreGRP) == false) {
+                return(false);
+            }
+        } else if(hptr->var.type == RH4NVARTYPEARRAY) {
+            if(lastDimension == -1) {
+                rh4nvarGetArrayDimension(&hptr->var, &lastDimension);
+                continue;
+            }
+            rh4nvarGetArrayDimension(&hptr->var, &currentDimension);
+            if(lastDimension != currentDimension) {
+                rh4n_log_debug(props->logging, "JSON Array Check = false. [%s] has a difference in dimensions", hptr->name);
                 return(false);
             }
         } else if(hptr->var.type != RH4NVARTYPEARRAY) {

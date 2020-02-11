@@ -56,7 +56,8 @@ char *rh4nvarPrintGetTypeString(int vartype) {
         "Float", 
         "Boolean",
         "Group",
-        "Array"
+        "Array",
+        "Null"
     };
 
     if(vartype > sizeof(typestrs)/sizeof(char*)) return(NULL);
@@ -70,7 +71,8 @@ void rh4nvarPrintVar(RH4nVarObj *variable, RH4nProperties *props, int outputfile
         {RH4NVARTYPEUSTRING, rh4nvarPrintUString},
         {RH4NVARTYPEBOOLEAN, rh4nvarPrintBool},
         {RH4NVARTYPEINTEGER, rh4nvarPrintInt},
-        {RH4NVARTYPEFLOAT, rh4nvarPrintFloat}
+        {RH4NVARTYPEFLOAT, rh4nvarPrintFloat},
+        {RH4NVARTYPENULL, rh4nvarPrintNull}
     };
 
     int i = 0;
@@ -142,6 +144,10 @@ void rh4nvarPrintFloat(RH4nVarObj *variable, RH4nProperties *props, int outputfi
         return;
     }
     dprintf(outputfile, "%f", *((double*)variable->value));
+}
+
+void rh4nvarPrintNull(RH4nVarObj *variable, RH4nProperties *props, int outputfile) {
+    dprintf(outputfile, "null");
 }
 
 void rh4nvarPrintTabs(int level, RH4nProperties *props) {
