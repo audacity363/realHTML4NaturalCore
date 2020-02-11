@@ -1,5 +1,5 @@
-CC = /usr/vac/bin/xlc
-#CC = /usr/bin/gcc
+#CC = /usr/vac/bin/xlc
+CC = /usr/bin/gcc
 AR = /usr/bin/ar
 
 #XLC:
@@ -7,8 +7,8 @@ LFLAGS1_SO = -G
 LFLAGS2_SO = 
 
 #GCC:
-#LFLAGS1_SO = -shared 
-#LFLAGS2_SO = 
+LFLAGS1_SO = -shared 
+LFLAGS2_SO = 
 
 INCLUDE = -I./include/ \
 		  -I./libs/rh4n_utils/include \
@@ -22,8 +22,8 @@ INCLUDE = -I./include/ \
 		  -I./natcaller/include/
 
 LIBS = -L./bin/libs \
-	   -lrh4nmessaging -lrh4nutils -lrh4nlogging -lrh4nvar2name -lrh4nvars -lrh4nldaparser \
-	   -lrh4njsongenerator -ldl
+	   -lrh4nmessaging -lrh4njsongenerator -lrh4nutils -lrh4nlogging -lrh4nvar2name -lrh4nvars -lrh4nldaparser \
+	   -ldl
 
 #XLC:
 CARGS1 = -g -c -fpic $(INCLUDE)
@@ -31,11 +31,11 @@ CARGS2 =
 CARGS_SO = -c -g -fpic $(INCLUDE)
 
 #GCC:
-#CARGS1 = -g -c -Wall -fpic $(INCLUDE)
+CARGS1 = -g -c -Wall -fpic $(INCLUDE)
 #Save preprocessor and assembly files 
 #CARGS1 = -g -c -Wall -fpic $(INCLUDE) -save-temps=obj
-#CARGS2 = 
-#CARGS_SO = -c -g -fpic $(INCLUDE)
+CARGS2 = 
+CARGS_SO = -c -g -fpic $(INCLUDE)
 
 LIBOUTPUT = ./bin/libs/
 TESTOUTPUT = ./bin/tests/
@@ -160,6 +160,7 @@ VARS_OBJS = rh4n_vars.o \
 		    rh4n_vars_bool.o \
 		    rh4n_vars_integer.o \
 		    rh4n_vars_float.o \
+			rh4n_vars_null.o \
 		    rh4n_vars_ustring.o \
 		    rh4n_vars_free.o \
 			rh4n_vars_dump.o \
@@ -237,6 +238,10 @@ json_test: json_generator
 	@$(CC) -g ./libs/rh4n_jsongenerator/tests/main.c $(INCLUDE) -o ./libs/rh4n_jsongenerator/tests/main $(LIBS)
 	@./libs/rh4n_jsongenerator/tests/main 2> ./jsonout
 	@cat ./jsonout
+
+json_generator_tests: json_generator tests_pre
+	@printf "CC ./libs/rh4n_jsongenerator/tests/null.c => ./bin/tests/json_generator_null\n"
+	@$(CC) -g ./libs/rh4n_jsongenerator/tests/null.c $(INCLUDE) -o ./bin/tests/json_generator_null $(LIBS)
 
 #                         +-----------------+
 #-------------------------|    LDA parser   |----------------------------------
