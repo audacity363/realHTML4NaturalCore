@@ -8,6 +8,7 @@
 #include <unistd.h>
 
 #include "rh4n.h"
+#include "rh4n_utils.h"
 #include "rh4n_messaging.h"
 #include "rh4n_natcaller.h"
 
@@ -16,7 +17,9 @@ struct RH4nCallArguments {
     char *socketfile;
     char *library;
     char *program;
-}
+};
+
+int rh4n_natcaller_parseArgs(int argc, char *argv[], struct RH4nCallArguments *args);
 
 int main(int argc, char *argv[]) {
     struct stat fileStatus;
@@ -59,8 +62,7 @@ int main(int argc, char *argv[]) {
         }
 
         now = time(NULL);
-        if(now - start >= 5) {
-            rh4n_log_fatal(props.logging, "Timeout while waiting for client on %s", argv[1]);
+        if(now - start >= 5) { rh4n_log_fatal(props.logging, "Timeout while waiting for client on %s", argv[1]);
             rh4n_natcaller_cleanup(udsServer, udsClient, argv[1], &props);
             exit(1);
         }
@@ -123,7 +125,7 @@ int rh4n_natcaller_init_plain(RH4nProperties *props, int recvSocket) {
     return(0);
 }
 
-void rh4n_natcaller_cleanup(int udsServer, int udsClient, char udsServerPath, RH4nProperties *props) {
+void rh4n_natcaller_cleanup(int udsServer, int udsClient, char *udsServerPath, RH4nProperties *props) {
     if(udsClient > -1) close(udsClient);
     if(udsServer > -1) close(udsServer);
     unlink(udsServerPath);

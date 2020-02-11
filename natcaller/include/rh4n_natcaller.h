@@ -22,8 +22,8 @@ int rh4n_natcaller_callNatural(RH4nProperties *props);
 void rh4n_natcaller_logInternalError(RH4nProperties *props, char *error_str);
 void rh4n_natcaller_handleNaturalError(RH4nProperties *props, int nniret, struct natural_exception natex);
 void rh4n_natcaller_logNaturalError(RH4nProperties *props, struct natural_exception natex);
-void rh4n_natcaller_cleanup(int udsServer, int udsClient, char udsServerPath, RH4nProperties *props);
-int rh4n_natcaller_parseArgs(int argc, char *argv[], struct RH4nCallArguments *args);
+void rh4n_natcaller_cleanup(int udsServer, int udsClient, char *udsServerPath, RH4nProperties *props);
+//int rh4n_natcaller_parseArgs(int argc, char *argv[], struct RH4nCallArguments *args);
 
 #ifdef natni_h
 struct parameter_description* rh4nNaturalParamsGeneration(pnni_611_functions nnifuncs, RH4nProperties *properties, int *pnnierr);
