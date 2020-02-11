@@ -27,6 +27,7 @@ typedef struct rh4n_log_rule_s {
 
 RH4nLogrule *rh4nLoggingCreateRule(const char*, const char*, const int, const char*);
 RH4nLogrule *rh4nLoggingCreateStreamingRule(const char*, const char*, const int, const char*);
+const char *rh4nLoggingGetLevelStr(int level);
 void rh4n_del_log_rule(RH4nLogrule *a_rule);
 int rh4nLoggingConvertStrtoInt(const char*);
 char *rh4nLoggingCreateLogfilepath(const char*, const char*, const char*, struct tm*);

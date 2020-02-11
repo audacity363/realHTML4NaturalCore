@@ -94,16 +94,17 @@ int rh4n_messaging_recvVarlistValue(int recvSocket, RH4nVarObj *target, RH4nProp
     rh4n_log_develop(props->logging, "Waiting for var value length");
     RH4N_CHECKERROR(rh4n_messaging_recvDataChunk(recvSocket, &target->length, sizeof(target->length), props));
 
-    if(vartype == RH4NVARTYPEARRAY) {
-        return(rh4n_messaging_recvVarlistArray(recvSocket, target, props));
-    }
-
     if(target->length == 0) {
         target->value = NULL;
         rh4n_messaging_sendAcknowledge(recvSocket, ASCII_ACK, props);
         return(0);
     }
 
+    if(vartype == RH4NVARTYPEARRAY) {
+        return(rh4n_messaging_recvVarlistArray(recvSocket, target, props));
+    }
+
+    
     if((target->value = malloc(target->length)) == NULL) {
         rh4n_log_fatal(props->logging, "Could not allocate memory for value");
         rh4n_messaging_sendAcknowledge(recvSocket, ASCII_NACK, props);

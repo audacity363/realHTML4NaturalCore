@@ -20,30 +20,32 @@ struct RH4nCallArguments {
 };
 
 int rh4n_natcaller_parseArgs(int argc, char *argv[], struct RH4nCallArguments *args);
+void rh4n_natcaller_printUsage(char *binname);
 
 int main(int argc, char *argv[]) {
     struct stat fileStatus;
+    struct RH4nCallArguments args; memset(&args, 0x00, sizeof(args));
     int udsClient = -1, initRet = 0;
     RH4nProperties props; memset(&props, 0x00, sizeof(props));
     time_t start = 0, now = 0;
 
-    rh4n_natcaller_parseArgs(argc, argv, NULL);
-    return(0);
-
-    if(argc != 2) {
-        fprintf(stderr, "Usage: %s <socketfile>\n", argv[0]);
+    if(argc < 2) {
+        rh4n_natcaller_printUsage(argv[0]);
         return(-1);
     }
 
-    //TODO; parse the Loglevel from arguments
-    if((props.logging = rh4nLoggingCreateStreamingRule("", "", RH4N_ERROR, "")) == NULL) {
+    if(rh4n_natcaller_parseArgs(argc, argv, &args) < 0) {
+        return(-1);
+    }
+
+    if((props.logging = rh4nLoggingCreateStreamingRule(args.library, args.program, args.loglevel, "")) == NULL) {
         fprintf(stderr, "Could not initialize logging to stdout\n");
         return(-1);
     }
 
     int udsServer = 0;
-    if((udsServer = rh4n_messaging_createUDSServer(argv[1], RH4NLIBMESSAGINGFLAG_NONBLOCKING, &props)) < 0) {
-        rh4n_natcaller_cleanup(udsServer, udsClient, argv[1], &props);
+    if((udsServer = rh4n_messaging_createUDSServer(args.socketfile, RH4NLIBMESSAGINGFLAG_NONBLOCKING, &props)) < 0) {
+        rh4n_natcaller_cleanup(udsServer, udsClient, args.socketfile, &props);
         exit(1);
     }
 
@@ -57,13 +59,13 @@ int main(int argc, char *argv[]) {
             break;
         } else if(udsClient == -1) {
             rh4n_log_fatal(props.logging, "Could not wait for new client");
-            rh4n_natcaller_cleanup(udsServer, udsClient, argv[1], &props);
+            rh4n_natcaller_cleanup(udsServer, udsClient, args.socketfile, &props);
             exit(1);
         }
 
         now = time(NULL);
         if(now - start >= 5) { rh4n_log_fatal(props.logging, "Timeout while waiting for client on %s", argv[1]);
-            rh4n_natcaller_cleanup(udsServer, udsClient, argv[1], &props);
+            rh4n_natcaller_cleanup(udsServer, udsClient, args.socketfile, &props);
             exit(1);
         }
     }
@@ -136,21 +138,50 @@ void rh4n_natcaller_cleanup(int udsServer, int udsClient, char *udsServerPath, R
 int rh4n_natcaller_parseArgs(int argc, char *argv[], struct RH4nCallArguments *args) {
     int opt;
 
+    args->loglevel = RH4N_ERROR;
+
     while((opt = getopt(argc, argv, "L:P:l:")) != EOF) {
         switch(opt) {
             case 'L':
-                printf("Library: %s\n", optarg);
+                args->library = optarg;
                 break;
             case 'P':
-                printf("Program: %s\n", optarg);
+                args->program = optarg;
                 break;
             case 'l':
-                printf("Loglevel: %s\n", optarg);
+                if((args->loglevel = rh4nLoggingConvertStrtoInt(optarg)) < 0) {
+                    fprintf(stderr, "Unkown loglevel %s\n", optarg);
+                    rh4n_natcaller_printUsage(argv[0]);
+                    return(-1);
+                }
                 break;
         }
     }
 
-    for(; optind < argc; optind++) {
-        printf("extra: %s\n", argv[optind]);
+    if(optind+1 != argc) {
+        rh4n_natcaller_printUsage(argv[0]);
+        return(-1);
     }
+
+    if(args->library == NULL) {
+        args->library = "";
+    }
+
+    if(args->program == NULL) {
+        args->program = "";
+    }
+
+    args->socketfile = argv[optind];
+    return(0);
+}
+
+void rh4n_natcaller_printUsage(char *binname) {
+    printf("Usage: %s [-options] socketfile\n\n", binname);
+    printf("options:\n");
+    printf("\t-l <DEVELOP|DEBUG|INFO|WARN|ERROR|FATAL> default: ERROR\n");
+    printf("\t\tset logging level\n");
+    printf("\t-L <libname>\n");
+    printf("\t\tset natural library which shows up in the logging\n");
+    printf("\t-P <progname>\n");
+    printf("\t\tset natural program which shows up in the logging\n");
 }
