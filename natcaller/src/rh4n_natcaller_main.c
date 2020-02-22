@@ -6,6 +6,7 @@
 #include <sys/types.h>
 #include <sys/stat.h>
 #include <unistd.h>
+#include <signal.h>
 
 #include "rh4n.h"
 #include "rh4n_utils.h"
@@ -19,15 +20,21 @@ struct RH4nCallArguments {
     char *program;
 };
 
+struct RH4nCallArguments args;
+int g_rh4n_natcaller_udsServer = 0, g_rh4n_natcaller_udsClient = 0;
+RH4nProperties *g_rh4n_natcaller_props = NULL;
+
 int rh4n_natcaller_parseArgs(int argc, char *argv[], struct RH4nCallArguments *args);
 void rh4n_natcaller_printUsage(char *binname);
+void rh4n_natcaller_signalHandler(int signal);
 
 int main(int argc, char *argv[]) {
     struct stat fileStatus;
-    struct RH4nCallArguments args; memset(&args, 0x00, sizeof(args));
-    int udsClient = -1, initRet = 0;
+    int initRet = 0;
     RH4nProperties props; memset(&props, 0x00, sizeof(props));
     time_t start = 0, now = 0;
+
+    memset(&args, 0x00, sizeof(args));
 
     if(argc < 2) {
         rh4n_natcaller_printUsage(argv[0]);
@@ -38,14 +45,17 @@ int main(int argc, char *argv[]) {
         return(-1);
     }
 
+    g_rh4n_natcaller_props = &props;
+
+    signal(9, rh4n_natcaller_signalHandler);
+
     if((props.logging = rh4nLoggingCreateStreamingRule(args.library, args.program, args.loglevel, "")) == NULL) {
         fprintf(stderr, "Could not initialize logging to stdout\n");
         return(-1);
     }
 
-    int udsServer = 0;
-    if((udsServer = rh4n_messaging_createUDSServer(args.socketfile, RH4NLIBMESSAGINGFLAG_NONBLOCKING, &props)) < 0) {
-        rh4n_natcaller_cleanup(udsServer, udsClient, args.socketfile, &props);
+    if((g_rh4n_natcaller_udsServer = rh4n_messaging_createUDSServer(args.socketfile, RH4NLIBMESSAGINGFLAG_NONBLOCKING, &props)) < 0) {
+        rh4n_natcaller_cleanup(g_rh4n_natcaller_udsServer, g_rh4n_natcaller_udsClient, args.socketfile, &props);
         exit(1);
     }
 
@@ -53,57 +63,52 @@ int main(int argc, char *argv[]) {
     start = time(NULL);
 
     while(1) {
-        udsClient = rh4n_messaging_waitForClient(udsServer, &props);
-        if(udsClient > 0) {
-            rh4n_log_debug(props.logging, "Got new client %d", udsClient);
+        g_rh4n_natcaller_udsClient = rh4n_messaging_waitForClient(g_rh4n_natcaller_udsServer, &props);
+        if(g_rh4n_natcaller_udsClient > 0) {
+            rh4n_log_debug(props.logging, "Got new client %d", g_rh4n_natcaller_udsClient);
             break;
-        } else if(udsClient == -1) {
+        } else if(g_rh4n_natcaller_udsClient == -1) {
             rh4n_log_fatal(props.logging, "Could not wait for new client");
-            rh4n_natcaller_cleanup(udsServer, udsClient, args.socketfile, &props);
+            rh4n_natcaller_cleanup(g_rh4n_natcaller_udsServer, g_rh4n_natcaller_udsClient, args.socketfile, &props);
             exit(1);
         }
 
         now = time(NULL);
-        if(now - start >= 5) { rh4n_log_fatal(props.logging, "Timeout while waiting for client on %s", argv[1]);
-            rh4n_natcaller_cleanup(udsServer, udsClient, args.socketfile, &props);
+        if(now - start >= 5) { rh4n_log_fatal(props.logging, "Timeout while waiting for client on %s", args.socketfile);
+            rh4n_natcaller_cleanup(g_rh4n_natcaller_udsClient, g_rh4n_natcaller_udsClient, args.socketfile, &props);
             exit(1);
         }
     }
-    if(udsClient < 0) {
+    if(g_rh4n_natcaller_udsClient< 0) {
         rh4n_log_fatal(props.logging, "Timeout while waiting for a new client");
         exit(1);
     }
 
-
-    /*if((udsClient = rh4n_messaging_connectToUDSServer(argv[1], &props)) < 0) {
-        return(-1);
-    }*/
-
-    RH4N_CHECKERROR(rh4n_main_loadSessionInformations(&props, udsClient));
+    RH4N_CHECKERROR(rh4n_main_loadSessionInformations(&props, g_rh4n_natcaller_udsClient));
     
     switch(props.mode) {
         case RH4N_MODE_PLAIN:
-            initRet = rh4n_natcaller_init_plain(&props, udsClient);
+            initRet = rh4n_natcaller_init_plain(&props, g_rh4n_natcaller_udsClient);
             break;
         case RH4N_MODE_WS:
             rh4n_log_fatal(props.logging, "Websocket mode is not yet implemented!");
-            rh4n_natcaller_cleanup(udsServer, udsClient, argv[1], &props);
+            rh4n_natcaller_cleanup(g_rh4n_natcaller_udsServer, g_rh4n_natcaller_udsClient, args.socketfile, &props);
             break;
         default:
             rh4n_log_fatal(props.logging, "God unkown startup mode: [0x%.2x]", props.mode);
-            rh4n_natcaller_cleanup(udsServer, udsClient, argv[1], &props);
+            rh4n_natcaller_cleanup(g_rh4n_natcaller_udsServer, g_rh4n_natcaller_udsClient, args.socketfile, &props);
             return(-1);
     }
 
     if(initRet < 0) {
         rh4n_log_fatal(props.logging, "Something went wrong while initializing");
-        rh4n_natcaller_cleanup(udsServer, udsClient, argv[1], &props);
+        rh4n_natcaller_cleanup(g_rh4n_natcaller_udsServer, g_rh4n_natcaller_udsClient, args.socketfile, &props);
         return(-1);
     }
 
     rh4n_natcaller_callNatural(&props);
 
-    rh4n_natcaller_cleanup(udsServer, udsClient, argv[1], &props);
+    rh4n_natcaller_cleanup(g_rh4n_natcaller_udsServer, g_rh4n_natcaller_udsClient, args.socketfile, &props);
     return(0);
 }
 
@@ -184,4 +189,9 @@ void rh4n_natcaller_printUsage(char *binname) {
     printf("\t\tset natural library which shows up in the logging\n");
     printf("\t-P <progname>\n");
     printf("\t\tset natural program which shows up in the logging\n");
+}
+
+void rh4n_natcaller_signalHandler(int signal) {
+    rh4n_log_error(g_rh4n_natcaller_props->logging, "Recived signal %d. Cleaning up", signal);
+    rh4n_natcaller_cleanup(g_rh4n_natcaller_udsServer, g_rh4n_natcaller_udsClient, args.socketfile, g_rh4n_natcaller_props);
 }

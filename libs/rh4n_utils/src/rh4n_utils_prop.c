@@ -14,8 +14,7 @@ int rh4nUtilsDumpProperties(char *filename, RH4nProperties *props) {
     if((outputfile = open(filename, O_WRONLY | O_CREAT, S_IRUSR | S_IWUSR)) < 0) {
         return(RH4N_RET_FILE_ERR);
     }
-
-    write(outputfile, props->natlibrary, sizeof(props->natlibrary));
+write(outputfile, props->natlibrary, sizeof(props->natlibrary));
     write(outputfile, props->natprogram, sizeof(props->natprogram));
 
     i_tmp = RH4N_UTILS_STRLEN(props->natparms);
@@ -169,6 +168,7 @@ void rh4nUtilsPrintProperties(RH4nProperties *props) {
 }
 
 void rh4nUtilsFreeProperties(RH4nProperties *props) {
+    if(props->logging) rh4n_del_log_rule(props->logging);
     if(props->natparms) free(props->natparms);
     if(props->natsrcpath) free(props->natsrcpath);
     if(props->outputfile) free(props->outputfile);

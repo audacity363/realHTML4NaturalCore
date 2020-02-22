@@ -18,8 +18,7 @@ int rh4n_messaging_sendHeader(int sendSocket, uint8_t messageType, uint32_t data
     }
 
     return(0);
-}
-
+} 
 int rh4n_messaging_recvHeader(int recvSocket, RH4nMessageingHeader_t *header, RH4nProperties *props) {
     RH4N_CHECKERROR(rh4n_messaging_waitForData(recvSocket, RH4NLIBMESSAGING_RESPONSETIMEOUT, 0, props));
     RH4N_CHECKERROR(rh4n_messaging_readFromSocket(recvSocket, header, sizeof(RH4nMessageingHeader_t), props));
@@ -75,7 +74,7 @@ int rh4n_messaging_recvAcknowledge(int recvSocket, uint8_t *ack, RH4nProperties 
     }
 
     if(read(recvSocket, &responseMessage, sizeof(responseMessage)) < 0) {
-        rh4n_log_fatal(props->logging, "Error while eading acknowledge - %s", strerror(errno));
+        rh4n_log_fatal(props->logging, "Error while reading acknowledge - %s", strerror(errno));
         return(-1);
     }
 

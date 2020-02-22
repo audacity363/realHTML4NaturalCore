@@ -121,7 +121,7 @@ int rh4n_messaging_connectToUDSServer(const char *path, RH4nProperties *props) {
 }
 
 int rh4n_messaging_waitForData(int socket, int secondsTimeout, int usecondsTimeout, RH4nProperties *props) {
-    int selectRet = 0;
+    int selectRet = 0, i = 0;
     struct timeval tv;
     fd_set socketSet;
 
@@ -136,7 +136,12 @@ int rh4n_messaging_waitForData(int socket, int secondsTimeout, int usecondsTimeo
         return(-1);
     }
 
-    if(selectRet == 0) { return(1); }
-    if(FD_ISSET(socket, &socketSet)) { return(0); }
+    if(selectRet == 0) { 
+        rh4n_log_warn(props->logging, "Timeout while waiting for new data on socket %d", socket);
+        return(1); 
+    } else if(FD_ISSET(socket, &socketSet)) { 
+        return(0); 
+    }
+    rh4n_log_fatal(props->logging, "Unkown socket responed. Select ret: %d", selectRet);
     return(-1);
 }
