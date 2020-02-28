@@ -7,6 +7,7 @@
 #include <sys/stat.h>
 #include <unistd.h>
 #include <signal.h>
+#include <sys/socket.h>
 
 #include "rh4n.h"
 #include "rh4n_utils.h"
@@ -30,7 +31,7 @@ void rh4n_natcaller_signalHandler(int signal);
 
 int main(int argc, char *argv[]) {
     struct stat fileStatus;
-    int initRet = 0;
+    int initRet = 0, natRet = 0;
     RH4nProperties props; memset(&props, 0x00, sizeof(props));
     time_t start = 0, now = 0;
 
@@ -85,31 +86,20 @@ int main(int argc, char *argv[]) {
     }
 
     RH4N_CHECKERROR(rh4n_main_loadSessionInformations(&props, g_rh4n_natcaller_udsClient));
-    
-    switch(props.mode) {
-        case RH4N_MODE_PLAIN:
-            initRet = rh4n_natcaller_init_plain(&props, g_rh4n_natcaller_udsClient);
-            break;
-        case RH4N_MODE_WS:
-            rh4n_log_fatal(props.logging, "Websocket mode is not yet implemented!");
-            rh4n_natcaller_cleanup(g_rh4n_natcaller_udsServer, g_rh4n_natcaller_udsClient, args.socketfile, &props);
-            break;
-        default:
-            rh4n_log_fatal(props.logging, "God unkown startup mode: [0x%.2x]", props.mode);
-            rh4n_natcaller_cleanup(g_rh4n_natcaller_udsServer, g_rh4n_natcaller_udsClient, args.socketfile, &props);
-            return(-1);
-    }
 
+    initRet = rh4n_natcaller_init_plain(&props, g_rh4n_natcaller_udsClient);
     if(initRet < 0) {
         rh4n_log_fatal(props.logging, "Something went wrong while initializing");
         rh4n_natcaller_cleanup(g_rh4n_natcaller_udsServer, g_rh4n_natcaller_udsClient, args.socketfile, &props);
         return(-1);
     }
 
-    rh4n_natcaller_callNatural(&props);
+    props.udsClient = g_rh4n_natcaller_udsClient;
+
+    natRet = rh4n_natcaller_callNatural(&props);
 
     rh4n_natcaller_cleanup(g_rh4n_natcaller_udsServer, g_rh4n_natcaller_udsClient, args.socketfile, &props);
-    return(0);
+    return(natRet);
 }
 
 int rh4n_main_loadSessionInformations(RH4nProperties *props, int recvSocket) {
@@ -133,7 +123,10 @@ int rh4n_natcaller_init_plain(RH4nProperties *props, int recvSocket) {
 }
 
 void rh4n_natcaller_cleanup(int udsServer, int udsClient, char *udsServerPath, RH4nProperties *props) {
-    if(udsClient > -1) close(udsClient);
+    if(udsClient > -1) {
+        shutdown(udsClient, SHUT_RDWR);
+        close(udsClient);
+    }
     if(udsServer > -1) close(udsServer);
     unlink(udsServerPath);
 

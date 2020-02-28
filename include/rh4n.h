@@ -47,7 +47,7 @@
 #define RH4N_MODE_PLAIN 0
 #define RH4N_MODE_WS 1
 
-#define RH4N_CHECKERROR(function) if(function < 0) { return(-1); }
+#define RH4N_CHECKERROR(function) {int rh4ncheckerrorret = 0; if((rh4ncheckerrorret = function) != 0) { return(rh4ncheckerrorret); }}
 
 typedef struct {
     char natlibrary[NNI_LEN_LIBRARY+1];
@@ -66,7 +66,9 @@ typedef struct {
     RH4nLogrule *logging;
 
     char username[33];
+
     uint8_t mode;
+    int udsClient;
 
 } RH4nProperties;
 

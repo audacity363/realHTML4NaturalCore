@@ -20,6 +20,8 @@ int rh4n_messaging_sendHeader(int sendSocket, uint8_t messageType, uint32_t data
     return(0);
 } 
 int rh4n_messaging_recvHeader(int recvSocket, RH4nMessageingHeader_t *header, RH4nProperties *props) {
+    int readRet = 0;
+
     RH4N_CHECKERROR(rh4n_messaging_waitForData(recvSocket, RH4NLIBMESSAGING_RESPONSETIMEOUT, 0, props));
     RH4N_CHECKERROR(rh4n_messaging_readFromSocket(recvSocket, header, sizeof(RH4nMessageingHeader_t), props));
 
@@ -49,8 +51,15 @@ int rh4n_messaging_readFromSocket(int recvSocket, void *data, int length, RH4nPr
     int bytesRead = 0;
 
     if((bytesRead = read(recvSocket, data, length)) < 0) {
+        if(errno == ECONNRESET) {
+            rh4n_log_error(props->logging, "Socket was closed");
+            return(1);
+        }
         rh4n_log_fatal(props->logging, "Could not read from socket - %s", strerror(errno));
         return(-1);
+    } else if(bytesRead == 0) {
+        rh4n_log_error(props->logging, "Socket was closed");
+        return(1);
     } else if(bytesRead != length) {
         rh4n_log_fatal(props->logging, "Could not read data from socket. Bytes read: [%d] should be: [%d]", bytesRead, length);
         return(-1);
@@ -58,7 +67,7 @@ int rh4n_messaging_readFromSocket(int recvSocket, void *data, int length, RH4nPr
 
     //rh4n_log_develop(props->logging, "Read %d bytes from socket [%d]", bytesRead, recvSocket);
 
-    return(bytesRead);
+    return(0);
 }
 
 void rh4n_messaging_sendAcknowledge(int sendSocket, uint8_t ack, RH4nProperties *props) {
@@ -73,10 +82,7 @@ int rh4n_messaging_recvAcknowledge(int recvSocket, uint8_t *ack, RH4nProperties 
         return(-1);
     }
 
-    if(read(recvSocket, &responseMessage, sizeof(responseMessage)) < 0) {
-        rh4n_log_fatal(props->logging, "Error while reading acknowledge - %s", strerror(errno));
-        return(-1);
-    }
+    RH4N_CHECKERROR(rh4n_messaging_readFromSocket(recvSocket, &responseMessage, sizeof(responseMessage), props));
 
     if(responseMessage == ASCII_NACK) {
         rh4n_log_fatal(props->logging, "God negative acknowledge");
@@ -99,6 +105,6 @@ int rh4n_messaging_sendDataChunk(int sendSocket, void *data, int length, RH4nPro
 
 int rh4n_messaging_recvDataChunk(int recvSocket, void *data, int length, RH4nProperties *props) {
     RH4N_CHECKERROR(rh4n_messaging_waitForData(recvSocket, RH4NLIBMESSAGING_RESPONSETIMEOUT, 0, props));
-    RH4N_CHECKERROR(rh4n_messaging_readFromSocket(recvSocket, data, length, props)); 
+    RH4N_CHECKERROR(rh4n_messaging_readFromSocket(recvSocket, data, length, props));
     return(0);
 }

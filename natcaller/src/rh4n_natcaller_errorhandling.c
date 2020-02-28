@@ -6,6 +6,7 @@
 
 #include "rh4n.h"
 #include "rh4n_natcaller.h"
+#include "rh4n_messaging.h"
 
 void rh4n_natcaller_logInternalError(RH4nProperties *props, char *error_str) {
     FILE *outputfile = NULL;
@@ -32,7 +33,11 @@ void rh4n_natcaller_handleNaturalError(RH4nProperties *props, int nniret, struct
     rh4n_log_error(props->logging, "Error while executing natural program: %d", nniret);
     if(nniret > 0) {
         rh4n_log_error(props->logging, "Natural runtime error: %d", natex.natMessageNumber);
-        rh4n_natcaller_logNaturalError(props, natex);
+        if(props->mode == 0) {
+            rh4n_natcaller_logNaturalError(props, natex);
+        } else { 
+            rh4n_natcaller_logNaturalErrorToSocket(props, natex);
+        }
         return;
     }
 
@@ -55,4 +60,16 @@ void rh4n_natcaller_logNaturalError(RH4nProperties *props, struct natural_except
 
     fclose(outputfile);
     return;
+}
+
+void rh4n_natcaller_logNaturalErrorToSocket(RH4nProperties *props, struct natural_exception natex) {
+    char errorstr[1024];
+
+    rh4n_log_develop(props->logging, "Sending error to socket %d", props->udsClient);
+
+    sprintf(errorstr, RH4N_TEMPLATE_NAT_JSON, natex.natMessageNumber, natex.natMessageText, 
+            natex.natLibrary, natex.natMember, natex.natName, natex.natMethod, natex.natLine);
+
+
+    rh4n_messaging_sendTextBlock(props->udsClient, errorstr, props);
 }

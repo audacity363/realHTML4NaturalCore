@@ -47,7 +47,8 @@ int rh4n_natcaller_callNatural(RH4nProperties *props) {
 
     rh4n_log_info(props->logging, "Logon into Library [%s]", props->natlibrary);
     if((nniret = nnifuncs->pf_nni_logon(nnifuncs, props->natlibrary, NULL, NULL)) != NNI_RC_OK) {
-        rh4n_log_error(props->logging, "Could not logon to library [%s]. NNI ret: %d", nniret); sprintf(error_str, "Could not logon to library [%s]. Please check library name or pemissions", props->natlibrary);
+        rh4n_log_error(props->logging, "Could not logon to library [%s]. NNI ret: %d", nniret); 
+        sprintf(error_str, "Could not logon to library [%s]. Please check library name or pemissions", props->natlibrary);
         rh4n_natcaller_logInternalError(props, error_str);
         return(RH4N_RET_INTERNAL_ERR);
     }

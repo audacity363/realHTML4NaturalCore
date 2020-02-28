@@ -121,7 +121,7 @@ int rh4n_messaging_connectToUDSServer(const char *path, RH4nProperties *props) {
 }
 
 int rh4n_messaging_waitForData(int socket, int secondsTimeout, int usecondsTimeout, RH4nProperties *props) {
-    int selectRet = 0, i = 0;
+    int selectRet = 0;
     struct timeval tv;
     fd_set socketSet;
 

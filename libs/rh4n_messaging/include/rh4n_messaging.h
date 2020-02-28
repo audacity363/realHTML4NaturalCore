@@ -16,6 +16,7 @@ extern "C" {
 
 #define RH4NLIBMESSAGING_TYPESESSIONINFORMATIONS 0x01
 #define RH4NLIBMESSAGING_TYPEVARLIST 0x02
+#define RH4NLIBMESSAGING_TYPETEXTBLOCK 0x03
 
 #define ASCII_STARTOFHEADER 0x01
 #define ASCII_EOT 0x06
@@ -64,6 +65,10 @@ int rh4n_messaging_recvVarlistNode(int recvSocket, RH4nVarEntry_t *target, RH4nP
 int rh4n_messaging_recvVarlistValue(int recvSocket, RH4nVarObj *target, RH4nProperties *props);
 int rh4n_messaging_recvVarlistArray(int recvSocket, RH4nVarObj *target, RH4nProperties *props);
 void rh4n_messaging_recvVarlistAddNode(uint8_t nextFlags, RH4nVarEntry_t *newNode, RH4nVarEntry_t *lastNode, RH4nVarList *varlist);
+
+
+int rh4n_messaging_sendTextBlock(int sendSocket, char *text, RH4nProperties *props);
+int rh4n_messaging_recvTextBlock(int recvSocket, char **text, RH4nProperties *props);
 
 #ifdef __cplusplus
 }

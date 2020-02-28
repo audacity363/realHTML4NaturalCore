@@ -24,7 +24,8 @@ int rh4n_messaging_sendSessionInformations(int sendSocket, RH4nProperties *props
         {"logpath", &props->logpath, -1},
         {"loglevel", &props->i_loglevel, sizeof(props->i_loglevel)},
         {"username", props->username, strlen(props->username)},
-        {"outputfile", &props->outputfile, -1}
+        {"outputfile", &props->outputfile, -1},
+        {"mode", &props->mode, sizeof(props->mode)}
     };
     uint8_t i = 0;
     uint32_t length = 0;
@@ -70,7 +71,8 @@ int rh4n_messaging_recvSessionInformations(int recvSocket, RH4nProperties *props
         {"logpath", &props->logpath, -1},
         {"loglevel", &props->i_loglevel, sizeof(props->i_loglevel)},
         {"username", &props->username, sizeof(props->username)},
-        {"outputfile", &props->outputfile, -1}
+        {"outputfile", &props->outputfile, -1},
+        {"mode", &props->mode, sizeof(props->mode)}
     };
     RH4nMessageingHeader_t header; memset(&header, 0x00, sizeof(header));
     uint8_t i = 0;
@@ -114,10 +116,7 @@ int rh4n_messaging_recvSessionInformations(int recvSocket, RH4nProperties *props
             return(-1);
         }
 
-        if(rh4n_messaging_readFromSocket(recvSocket, target, length, props) < 0) {
-            rh4n_log_fatal(props->logging, "Could not read data from socket");
-            return(-1);
-        }
+        RH4N_CHECKERROR(rh4n_messaging_readFromSocket(recvSocket, target, length, props));
     }
 
     return(0);

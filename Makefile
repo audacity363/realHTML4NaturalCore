@@ -328,7 +328,8 @@ MESSAGING_OBJS = rh4n_messaging.o \
 				 rh4n_messaging_uds.o \
 				 rh4n_messaging_sessionInformations.o \
 				 rh4n_messaging_sendvars.o \
-				 rh4n_messaging_recvvars.o
+				 rh4n_messaging_recvvars.o \
+				 rh4n_messaging_textBlock.o
 MESSAGING_LIB = librh4nmessaging.a
 
 messaging: logging messaging_clean messaging_pre $(MESSAGING_OBJS)
@@ -377,7 +378,8 @@ NATUSER_OBJS = rh4n_nat_jumptab.o \
 			   rh4n_nat_getbodyvar.o \
 			   rh4n_nat_geturlvar.o \
 			   rh4n_nat_getuser.o \
-			   rh4n_nat_debug_init.o
+			   rh4n_nat_debug_init.o \
+			   rh4n_nat_sleep.o
 			   
 NATUSER_READOUT_OBJS = rh4n_nat_a_handling.o \
 					   rh4n_nat_i_handling.o \
