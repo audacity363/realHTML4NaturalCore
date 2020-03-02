@@ -12,7 +12,7 @@
 int rh4n_messaging_sendHeader(int sendSocket, uint8_t messageType, uint32_t dataLength, RH4nProperties *props) {
     RH4nMessageingHeader_t header = { ASCII_STARTOFHEADER, messageType, dataLength };
     
-    if(rh4n_messaging_writeToSocket(sendSocket, &header, sizeof(header), props) < sizeof(header)) {
+    if(rh4n_messaging_writeToSocket(sendSocket, &header, sizeof(header), props) != 0) {
         rh4n_log_fatal(props->logging, "Could not write header to socket [%d]", sendSocket);
         return(-1);
     }
@@ -35,8 +35,10 @@ int rh4n_messaging_recvHeader(int recvSocket, RH4nMessageingHeader_t *header, RH
 int rh4n_messaging_writeToSocket(int sendSocket, void *data, int length, RH4nProperties *props) {
     int bytesWritten = 0;
 
+    //rh4n_log_develop(props->logging, "Write %d bytes of data to socket [%d]", length, sendSocket);
+
     if((bytesWritten = write(sendSocket, data, length)) < 0) {
-        rh4n_log_fatal(props->logging, "Could not write data to socket - %s\n", strerror(errno));
+        rh4n_log_fatal(props->logging, "Could not write data to socket - %s", strerror(errno));
         return(-1);
     } else if(bytesWritten != length) {
         rh4n_log_fatal(props->logging, "Could not write data to socket. Bytes written: [%d] should be: [%d]", bytesWritten, length);
@@ -44,11 +46,13 @@ int rh4n_messaging_writeToSocket(int sendSocket, void *data, int length, RH4nPro
     }
 
     //rh4n_log_develop(props->logging, "Written %d bytes to socket [%d]", bytesWritten, sendSocket);
-    return(bytesWritten);
+    return(0);
 }
 
 int rh4n_messaging_readFromSocket(int recvSocket, void *data, int length, RH4nProperties *props) {
     int bytesRead = 0;
+
+    //rh4n_log_develop(props->logging, "Read %d bytes of data from socket [%d]", length, recvSocket);
 
     if((bytesRead = read(recvSocket, data, length)) < 0) {
         if(errno == ECONNRESET) {

@@ -44,12 +44,11 @@ int rh4n_messaging_sendSessionInformations(int sendSocket, RH4nProperties *props
             length = lookup[i].length;
         }
 
-        if(rh4n_messaging_writeToSocket(sendSocket, &length, sizeof(uint32_t), props) < 0) {
+        if(rh4n_messaging_sendDataChunk(sendSocket, &length, sizeof(length), props) != 0) {
             rh4n_log_fatal(props->logging, "Could not write length to socket");
             return(-1);
         }
-        
-        RH4N_CHECKERROR(rh4n_messaging_recvAcknowledge(sendSocket, NULL, props));
+
         if(length == 0) { continue; }
 
         if(rh4n_messaging_writeToSocket(sendSocket, target, length, props) < 0) {
