@@ -30,6 +30,7 @@ int rh4nnatStringHandler(RH4nNatVarHandleParms *args) {
     }
 
     rh4nUtilsTrimSpaces(tmpbuff);
+    rh4nUtilsEscapeQuotes(tmpbuff);
 
     if((varlibret = rh4nvarCreateNewString(args->varlist, NULL, args->tmpname, tmpbuff)) != RH4N_RET_OK) {
         sprintf(args->errorstr, "Could not create new string: %d", varlibret);
@@ -116,6 +117,8 @@ int rh4nnatSaveStringArrayEntry(RH4nNatVarHandleParms *args, int index[3]) {
     else if(args->desc->dimensions == 3) { varlibindex[0] = index[0]; varlibindex[1] = index[1]; varlibindex[2] = index[2]; }
 
     rh4nUtilsTrimSpaces(tmpbuff);
+    rh4nUtilsEscapeQuotes(tmpbuff);
+
     if((varlibret = rh4nvarSetStringArrayEntry(args->varlist, NULL, args->tmpname, varlibindex, tmpbuff)) != RH4N_RET_OK) {
         sprintf(args->errorstr, "Could not set Array Entry x: %d y: %d z: %d", varlibindex[0], varlibindex[1], varlibindex[2]);
         free(tmpbuff);

@@ -1,5 +1,5 @@
-#CC = /usr/vac/bin/xlc
-CC = /usr/bin/gcc
+CC = /usr/vac/bin/xlc
+#CC = /usr/bin/gcc
 AR = /usr/bin/ar
 
 #XLC:
@@ -7,8 +7,8 @@ LFLAGS1_SO = -G
 LFLAGS2_SO = 
 
 #GCC:
-LFLAGS1_SO = -shared 
-LFLAGS2_SO = 
+#LFLAGS1_SO = -shared 
+#LFLAGS2_SO = 
 
 INCLUDE = -I./include/ \
 		  -I./libs/rh4n_utils/include \
@@ -31,11 +31,11 @@ CARGS2 =
 CARGS_SO = -c -g -fpic $(INCLUDE)
 
 #GCC:
-CARGS1 = -g -c -Wall -fpic $(INCLUDE)
+#CARGS1 = -g -c -Wall -fpic $(INCLUDE)
 #Save preprocessor and assembly files 
 #CARGS1 = -g -c -Wall -fpic $(INCLUDE) -save-temps=obj
-CARGS2 = 
-CARGS_SO = -c -g -fpic $(INCLUDE)
+#CARGS2 = 
+#CARGS_SO = -c -g -fpic $(INCLUDE)
 
 LIBOUTPUT = ./bin/libs/
 TESTOUTPUT = ./bin/tests/
@@ -144,6 +144,11 @@ logging_clean:
 	@rm -f $(LIBOUTPUT)/$(UTILS_BIN)
 	@printf "Cleaning logging objects\n"
 	@rm -f $(LOGGING_BIN)/*.o
+
+logging_tests: logging tests_pre
+	@printf "Building logging tests\n"
+	@$(CC) -Wall $(LOGGING_SRC)/../tests/staticRule.c -o $(TESTOUTPUT)/logging_staticRule $(INCLUDE) $(LIBS)
+	@$(CC) -Wall $(LOGGING_SRC)/../tests/streamingRule.c -o $(TESTOUTPUT)/logging_streamingRule $(INCLUDE) $(LIBS)
 
 
 #                         +-----------------+

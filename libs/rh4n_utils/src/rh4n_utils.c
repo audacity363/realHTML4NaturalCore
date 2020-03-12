@@ -147,6 +147,14 @@ char *str_toLower(char *input)
   
 }
 
+void rh4nUtilsEscapeQuotes(char *str) {
+    char *searchptr = NULL;
+
+    while((searchptr = strchr(str, '"')) != NULL) {
+        *searchptr = '\'';
+    }
+}
+
 int rh4nUtilsloadSharedLibrary(RH4nProperties *props, char *name, void **ppsharedLibrary, char *error_str) {
     void *psharedLibrary = NULL;
 
