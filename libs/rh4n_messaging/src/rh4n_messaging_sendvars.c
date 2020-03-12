@@ -38,6 +38,7 @@ int rh4n_messaging_processVarlistNode(int sendSocket, RH4nVarEntry_t *target, RH
             RH4N_CHECKERROR(rh4n_messaging_processVarlistNode(sendSocket, hptr->nextlvl, props, level+1));
         }
     }
+
     return(0);
 }
 

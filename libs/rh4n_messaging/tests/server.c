@@ -21,8 +21,13 @@ int main() {
     //props.natsrcpath = "/opt/softwareag/fuser/";
     strcpy(props.username, "MyUSer");
 
-    rh4n_log_develop(props.logging, "LoadfromFile: %d", rh4nvarLoadFromFile("./libs/rh4n_messaging/tests/testvars", &props.bodyvars));
-    rh4n_log_develop(props.logging, "strerror: %s", strerror(errno));
+    //rh4n_log_develop(props.logging, "LoadfromFile: %d", rh4nvarLoadFromFile("./libs/rh4n_messaging/tests/testvars", &props.bodyvars));
+    //rh4n_log_develop(props.logging, "strerror: %s", strerror(errno));
+    //
+    rh4nvarCreateNewGroup(&props.bodyvars, "MyGroup");
+    rh4nvarCreateNewInt(&props.bodyvars, "MyGroup", "myInt", 2);
+
+
     rh4nvarPrintList(&props.bodyvars, NULL);
 
 

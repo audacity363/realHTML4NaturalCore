@@ -12,6 +12,7 @@ int rh4n_messaging_recvVarlist(int recvSocket, RH4nVarList *varlist, RH4nPropert
     RH4nMessageingHeader_t header; memset(&header, 0x00, sizeof(header));
     RH4nVarEntry_t *newEntry = NULL, *lastNode = NULL;
     uint8_t nextFlags = 0, pnextFlags = 0, seperator = 0;
+    int recvRet = 0;
 
     RH4N_CHECKERROR(rh4n_messaging_recvHeader(recvSocket, &header, props));
 
@@ -33,7 +34,12 @@ int rh4n_messaging_recvVarlist(int recvSocket, RH4nVarList *varlist, RH4nPropert
         memset(newEntry, 0x00, sizeof(RH4nVarEntry_t));
 
         rh4n_log_develop(props->logging, "Start reading node");
-        RH4N_CHECKERROR(rh4n_messaging_recvVarlistNode(recvSocket, newEntry, props));
+        if((recvRet = rh4n_messaging_recvVarlistNode(recvSocket, newEntry, props)) == 1) {
+            rh4n_log_fatal(props->logging, "Received EOT. This and the last one are NOT errors. Everything is fine");
+            break;
+        } else if(recvRet < 0) {
+            return(-1);
+        }
         
         pnextFlags = nextFlags;
         rh4n_log_develop(props->logging, "Waiting for next flags");
@@ -60,7 +66,13 @@ int rh4n_messaging_recvVarlistNode(int recvSocket, RH4nVarEntry_t *target, RH4nP
     uint32_t nameLength = 0;
 
     rh4n_log_develop(props->logging, "Waiting for var name length");
-    RH4N_CHECKERROR(rh4n_messaging_recvDataChunk(recvSocket, &nameLength, sizeof(nameLength), props));
+    if(rh4n_messaging_recvDataChunk(recvSocket, &nameLength, sizeof(nameLength), props) < 0) {
+        nameLength = nameLength >> 24;
+        if(nameLength == ASCII_EOT) {
+            return(1);
+        }
+        return(-1);
+    };
 
     if((target->name = malloc(nameLength+1)) == NULL) {
         rh4n_log_fatal(props->logging, "Could not allocate memory for var name");
