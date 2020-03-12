@@ -55,7 +55,9 @@ RH4nLogrule *rh4nLoggingCreateStreamingRule(const char *library, const char *pro
             fflush(stderr);
             return(NULL);
         }
+        free(logfile);
     }
+
 
     return(tmp);
 }
@@ -100,7 +102,7 @@ void rh4n_log(RH4nLogrule *rule, int level,
     pid = getpid();
 
     if(rule->level == RH4N_DEVELOP) {
-        snprintf(logprefix, MAX_PREFIX_LEN, "%s.%06ld [%-8s->%-8s@%d] %-7s (%s@%s:%ld) - ", datetime_buff, millis.tv_usec, 
+        snprintf(logprefix, MAX_PREFIX_LEN, "%s.%06ld [%-8s->%-8s@%d=>%d] %-7s (%s@%s:%ld) - ", datetime_buff, millis.tv_usec, 
             rule->nat_library, rule->nat_program, pid, level_str, func, file, line);
     } else {
         snprintf(logprefix, MAX_PREFIX_LEN, "%s.%06ld [%-8s->%-8s@%d] %-7s - ", datetime_buff, millis.tv_usec, 
@@ -133,6 +135,9 @@ void rh4n_log(RH4nLogrule *rule, int level,
         fflush(rule->outputfile);
         va_end(args);
     }
+
+    if(!rule->outputfile)
+        free(filepath);
 
     free(endformat);
     return;
@@ -173,10 +178,16 @@ int rh4nLoggingConvertStrtoInt(const char* cloglevel) {
 }
 
 char *rh4nLoggingCreateLogfilepath(const char* library, const char* program, const char *logpath, struct tm* time) {
-    static char logfilepath[3000];
-    char datebuff[11];
+    char *logfilepath, datebuff[11];
+    int buffsize = 0;
 
     strftime(datebuff, sizeof(datebuff), "%d.%m.%Y", time);
+
+    buffsize = snprintf(NULL, 0, "%s/rh4n_%s_%s_%s.log", logpath, library, program, datebuff);
+    if((logfilepath = calloc(sizeof(char), buffsize+1)) == NULL) {
+        fprintf(stderr, "Could not allocate memory for logfile path!\n"); fflush(stderr);
+        return(NULL);
+    }
 
     sprintf(logfilepath, "%s/rh4n_%s_%s_%s.log", logpath, library, program, datebuff);
     return(logfilepath);
