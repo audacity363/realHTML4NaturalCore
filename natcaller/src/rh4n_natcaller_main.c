@@ -55,46 +55,48 @@ int main(int argc, char *argv[]) {
         return(-1);
     }
 
-    if((g_rh4n_natcaller_udsServer = rh4n_messaging_createUDSServer(args.socketfile, RH4NLIBMESSAGINGFLAG_NONBLOCKING, &props)) < 0) {
-        rh4n_natcaller_cleanup(g_rh4n_natcaller_udsServer, g_rh4n_natcaller_udsClient, args.socketfile, &props);
-        exit(1);
-    }
+    rh4nUtilsLoadProperties(args.socketfile, &props);
 
-    rh4n_log_debug(props.logging, "Waiting for a new client.");
-    start = time(NULL);
+    // if((g_rh4n_natcaller_udsServer = rh4n_messaging_createUDSServer(args.socketfile, RH4NLIBMESSAGINGFLAG_NONBLOCKING, &props)) < 0) {
+    //     rh4n_natcaller_cleanup(g_rh4n_natcaller_udsServer, g_rh4n_natcaller_udsClient, args.socketfile, &props);
+    //     exit(1);
+    // }
 
-    while(1) {
-        g_rh4n_natcaller_udsClient = rh4n_messaging_waitForClient(g_rh4n_natcaller_udsServer, &props);
-        if(g_rh4n_natcaller_udsClient > 0) {
-            rh4n_log_debug(props.logging, "Got new client %d", g_rh4n_natcaller_udsClient);
-            break;
-        } else if(g_rh4n_natcaller_udsClient == -1) {
-            rh4n_log_fatal(props.logging, "Could not wait for new client");
-            rh4n_natcaller_cleanup(g_rh4n_natcaller_udsServer, g_rh4n_natcaller_udsClient, args.socketfile, &props);
-            exit(1);
-        }
+    // rh4n_log_debug(props.logging, "Waiting for a new client.");
+    // start = time(NULL);
 
-        now = time(NULL);
-        if(now - start >= 5) { rh4n_log_fatal(props.logging, "Timeout while waiting for client on %s", args.socketfile);
-            rh4n_natcaller_cleanup(g_rh4n_natcaller_udsClient, g_rh4n_natcaller_udsClient, args.socketfile, &props);
-            exit(1);
-        }
-    }
-    if(g_rh4n_natcaller_udsClient< 0) {
-        rh4n_log_fatal(props.logging, "Timeout while waiting for a new client");
-        exit(1);
-    }
+    // while(1) {
+    //     g_rh4n_natcaller_udsClient = rh4n_messaging_waitForClient(g_rh4n_natcaller_udsServer, &props);
+    //     if(g_rh4n_natcaller_udsClient > 0) {
+    //         rh4n_log_debug(props.logging, "Got new client %d", g_rh4n_natcaller_udsClient);
+    //         break;
+    //     } else if(g_rh4n_natcaller_udsClient == -1) {
+    //         rh4n_log_fatal(props.logging, "Could not wait for new client");
+    //         rh4n_natcaller_cleanup(g_rh4n_natcaller_udsServer, g_rh4n_natcaller_udsClient, args.socketfile, &props);
+    //         exit(1);
+    //     }
 
-    RH4N_CHECKERROR(rh4n_main_loadSessionInformations(&props, g_rh4n_natcaller_udsClient));
+    //     now = time(NULL);
+    //     if(now - start >= 5) { rh4n_log_fatal(props.logging, "Timeout while waiting for client on %s", args.socketfile);
+    //         rh4n_natcaller_cleanup(g_rh4n_natcaller_udsClient, g_rh4n_natcaller_udsClient, args.socketfile, &props);
+    //         exit(1);
+    //     }
+    // }
+    // if(g_rh4n_natcaller_udsClient< 0) {
+    //     rh4n_log_fatal(props.logging, "Timeout while waiting for a new client");
+    //     exit(1);
+    // }
 
-    initRet = rh4n_natcaller_init_plain(&props, g_rh4n_natcaller_udsClient);
-    if(initRet < 0) {
-        rh4n_log_fatal(props.logging, "Something went wrong while initializing");
-        rh4n_natcaller_cleanup(g_rh4n_natcaller_udsServer, g_rh4n_natcaller_udsClient, args.socketfile, &props);
-        return(-1);
-    }
+    // RH4N_CHECKERROR(rh4n_main_loadSessionInformations(&props, g_rh4n_natcaller_udsClient));
 
-    props.udsClient = g_rh4n_natcaller_udsClient;
+    // initRet = rh4n_natcaller_init_plain(&props, g_rh4n_natcaller_udsClient);
+    // if(initRet < 0) {
+    //     rh4n_log_fatal(props.logging, "Something went wrong while initializing");
+    //     rh4n_natcaller_cleanup(g_rh4n_natcaller_udsServer, g_rh4n_natcaller_udsClient, args.socketfile, &props);
+    //     return(-1);
+    // }
+
+    // props.udsClient = g_rh4n_natcaller_udsClient;
 
     natRet = rh4n_natcaller_callNatural(&props);
 
@@ -123,12 +125,12 @@ int rh4n_natcaller_init_plain(RH4nProperties *props, int recvSocket) {
 }
 
 void rh4n_natcaller_cleanup(int udsServer, int udsClient, char *udsServerPath, RH4nProperties *props) {
-    if(udsClient > -1) {
-        shutdown(udsClient, SHUT_RDWR);
-        close(udsClient);
-    }
-    if(udsServer > -1) close(udsServer);
-    unlink(udsServerPath);
+    // if(udsClient > -1) {
+    //     shutdown(udsClient, SHUT_RDWR);
+    //     close(udsClient);
+    // }
+    // if(udsServer > -1) close(udsServer);
+    // unlink(udsServerPath);
 
     rh4nUtilsFreeProperties(props);
 }
