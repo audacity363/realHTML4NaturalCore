@@ -4,6 +4,10 @@
 #include <string.h>
 #include <fcntl.h>
 
+#ifdef HAVE_SYS_STAT
+#include <sys/stat.h>
+#endif
+
 #include "rh4n.h"
 #include "rh4n_utils.h"
 

@@ -1,13 +1,12 @@
-#CC = /usr/vac/bin/xlc
-CC = /usr/bin/gcc
-AR = /usr/bin/ar
+CC = @CC@
+AR = @AR@
 
 #XLC:
 #LFLAGS1_SO = -G
 #LFLAGS2_SO = 
 
 #GCC:
-LFLAGS1_SO = -shared 
+LFLAGS1_SO = @LFLAGS1_SO@
 LFLAGS2_SO = 
 
 INCLUDE = -I./include/ \
@@ -31,7 +30,7 @@ LIBS = -L./bin/libs \
 #CARGS_SO = -c -g -fpic $(INCLUDE)
 
 #GCC:
-CARGS1 = -g -c -Wall -fpic $(INCLUDE)
+CARGS1 = @DEFS@ -g -c -Wall -fpic $(INCLUDE)
 #Save preprocessor and assembly files 
 #CARGS1 = -g -c -Wall -fpic $(INCLUDE) -save-temps=obj
 CARGS2 = 

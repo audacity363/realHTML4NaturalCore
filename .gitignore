@@ -7,3 +7,10 @@
 *.i
 *.s
 bin/*
+config.log
+config.status
+Makefile
+output.0
+requests
+traces.0
+Makefile
