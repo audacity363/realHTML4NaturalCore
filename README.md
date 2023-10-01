@@ -20,7 +20,7 @@ The connectors create the glue logic between the transport layer and Natural. He
 
 Currently available connectors:
 
-* TomcatConnector (exposes Natural via HTTP)
+* [TomcatConnector (exposes Natural via HTTP)](https://github.com/audacity363/realHTML4NaturalTomcatConnector)
 
 ## Core
 
@@ -80,6 +80,8 @@ TODO: document
 
 ## Usage
 
+To see a more in depth showcase have a look at the [Demoproject](https://github.com/audacity363/realHTML4NaturalDemo)
+
 ### Parameter data area
 
 In realHTML4Natural you only write subprograms as an entrypoint. These Subprograms need to have the following parameter data area defined. Otherwise you will get a NAT0969 Error (Parameter missmatch):
@@ -124,6 +126,10 @@ DEFINE DATA LOCAL
         3 article-name (A) DYNAMIC
         3 article-quantity  (I4)
 
+1 article-list-params
+    2 article-id-filter (A) DYNAMIC
+    2 article-name-filter (A) DYNAMIC
+
 1 article-list (1:*)
     2 article-id (I4)
     2 article-name (A) DYNAMIC
@@ -159,12 +165,12 @@ In the description of the user exists, it is often spoken of a "formatting strin
 
 #### RHGENJS (generate JSON)
 
-#### Usage
+#####  Usage
 ```
 call interface4 'RHGENJS' rh4n-internals <formatstring> <top-level-structure>
 ```
 
-#### Examples
+##### Examples
 
 ```
 call interface4 'RHGENJS' rh4n-internals 'article-details@LSHOP' article-details
@@ -227,49 +233,164 @@ results in:
 
 #### RHGETUO (get URL object)
 
-Usage:
+##### Usage:
 ```
 call interface4 'RHGETUO' rh4n-internals <formatstring> <top-level-structure>
 ```
 
+Like `move by name <source> to <target>` but for variables given by the connector which are located in the header of the request. When a parameter is passed via the header/URL it's datatype is always alphanumeric by nature. 
+
+##### Example:
+Example URL: `http://localhost/realHTML4Natural/nat/rh4ndemo/shop/getOrder?article-id-filter=1234&article-name-filter=5678`
+
+```
+call interface4 'RHGETUO' rh4n-internals 'article-list-params@LSHOP' article-list-params
+```
+Result:
+```
+1 article-list-params
+    2 article-id-filter (A) DYNAMIC    /* == 1234
+    2 article-name-filter (A) DYNAMIC  /* == 5678
+```
+
 #### RHGETUV (get URL variable)
 
-Usage:
+##### Usage:
 ```
 call interface4 'RHGETUV' rh4n-internals <name of variable> <natural variable>
 ```
 
+Gets one specific variable from the header/URL of the name `<name of variable>` and writes its value into `<natural variable>`
+
+##### Example:
+
+Example URL: `http://localhost/realHTML4Natural/nat/rh4ndemo/shop/getOrder?order-id=1234`
+
+```
+define data 
+    local
+        1 order-id (A) DYANMIC
+end-define
+
+call interface4 'RHGETUV' rh4n-internals 'order-id' order-id
+```
+Result:
+```
+define data 
+    local
+        1 order-id (A) DYANMIC /* == 1234
+end-define
+```
+
 #### RHGETBO (get body object)
 
-Usage:
+##### Usage:
 ```
 call interface4 'RHGETBO' rh4n-internals <formatstring> <top-level-structure>
 ```
 
+Matches a JSON structure to the given natural structure 
+
+##### Example:
+Given data:
+```
+{
+  "order-id": 936,
+  "customer-id": 376,
+  "customer-name": "Customer 376",
+  "article": [
+    {
+      "article-id": 4711,
+      "article-name": "Article 4711",
+      "article-quantity": 2
+    },
+    {
+      "article-id": 815,
+      "article-name": "Article 0815",
+      "article-quantity": 73
+    }
+  ]
+}
+```
+
+```
+call interface4 'RHGETBO' rh4n-internals 'order@LSHOP' order
+```
+
+Result:
+```
+1 order
+    2 order-id (i4)                   /* == 936
+    2 customer-id (i4)                /* == 376
+    2 customer-name (A) DYNAMIC       /* == "Customer 376"
+    2 article (1:*)                   /* gets expandes to (1:2)
+        3 article-id (I4)             /* == [4711, 815]
+        3 article-name (A) DYNAMIC    /* == ["Article 4711", "Article 0815"]
+        3 article-quantity  (I4)      /* == [2, 73]
+```
+
+
 #### RHGETBV (get body variable)
 
-Usage:
+##### Usage:
 ```
-call interface4 'RHGETBV' rh4n-internals <path to variable in tree structure> <natural variable>
+call interface4 'RHGETBV' rh4n-internals <variable name> <natural variable>
+```
+
+Gets the value of a single variable from the giving JSON structure in the body. Currently you can go down one level from the root to get the variable of a sub JSON object by prefixing the variable name by `<subname>.`.
+
+##### Example:
+Given data:
+```
+{
+    "customer-id": 836,
+    "customer-name": "Customer 123",
+    "customer-address": {
+        "street": "Example street",
+        "city": "Example city"
+    }
+}
+```
+
+```
+define data 
+    local
+        1 custom-name (A) DYNAMIC
+        1 customer-city (A) DYNAMIC
+end-define
+
+/* returns "Customer 123" in customer-name
+call interface4 'RHGETBV' rh4n-internals 'customer-name' customer-name 
+
+/* returns "Example city" in customer-city
+call interface4 'RHGETBV' rh4n-internals 'customer-address.city' customer-city
 ```
 
 #### RHGETUS (get user)
 
-Usage:
+##### Usage:
 ```
 call interface4 'RHGETUS' rh4n-internals <natural variable>
 ```
 
+When the used connector protects the call to natural via some kind of user authentication it returns the username of corresponding session. "<natural variable \> is from type alphanumeric and can have a dynamic or fixed length. If no user is set or authentication is not supported RH4N_RET_NO_USER is returned.
+
+
 #### RHDBGINI (realHTML debug init)
 
-Usage:
+##### Usage:
 ```
 call interface4 'RHDBGINI' rh4n-internals <log level> <path to fuser> <path to outputfile>
 ```
 
+***Only for development use when the user exists gets called from a program and the core framework is not initialized.***
+
+Creates a new RH4nProperties on the heap, initializes it with the given parameters and write the pointer to the first parameter (rh4n-internals). 
+
+
 #### RHSLEEP (sleep)
 
-Usage:
+##### Usage:
 ```
 call 'RHSLEEP'
 ```
@@ -278,3 +399,25 @@ just sleeps for one second
 
 #### RHSETRC (set return code)
 Future use. Will be used to indicate a return code to the calling connector
+
+## Building
+
+### Dependencies
+* C-Compiler
+* * Tested with gcc and xlc (Any "modern" version should work)
+* make
+* ar
+
+```
+./configure && make all
+```
+
+This will produce two binaries:
+
+* ./bin/librealHTML4Natural.so
+* ./bin/realHTML4NaturalNatCaller
+
+## Installation
+1. copy `./bin/realHTML4NaturalNatCaller` into your Natural bin directory (something like `$NAT_HOME/bin/`)
+2. copy `./bin/librealHTML4Natural.so` somewhere save (my personal favorite `/srv/rh4n/`)
+3. Extend or set your `$NATUSER` environment variable (or the one that is configured in your environment to load user libraries) with the absolute path to your `librealHTML4Natural.so` location
