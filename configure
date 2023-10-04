@@ -647,6 +647,7 @@ ac_header_c_list=
 ac_subst_vars='LTLIBOBJS
 LIBOBJS
 LFLAGS1_SO
+WALL_FLAG
 AR
 OBJEXT
 EXEEXT
@@ -3273,6 +3274,12 @@ then :
   as_fn_error $? "ar not found" "$LINENO" 5
 fi
 
+WALL_FLAG=" ";
+if test "$(basename "$CC")" == "gcc"
+then :
+  WALL_FLAG=-Wall
+
+fi
 if test "$(basename "$CC")" == "xlc"
 then :
   LFLAGS1_SO=-G
