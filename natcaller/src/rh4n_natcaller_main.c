@@ -50,12 +50,12 @@ int main(int argc, char *argv[]) {
 
     signal(9, rh4n_natcaller_signalHandler);
 
+    rh4nUtilsLoadProperties(args.socketfile, &props);
+
     if((props.logging = rh4nLoggingCreateStreamingRule(args.library, args.program, args.loglevel, "")) == NULL) {
         fprintf(stderr, "Could not initialize logging to stdout\n");
         return(-1);
     }
-
-    rh4nUtilsLoadProperties(args.socketfile, &props);
 
     // if((g_rh4n_natcaller_udsServer = rh4n_messaging_createUDSServer(args.socketfile, RH4NLIBMESSAGINGFLAG_NONBLOCKING, &props)) < 0) {
     //     rh4n_natcaller_cleanup(g_rh4n_natcaller_udsServer, g_rh4n_natcaller_udsClient, args.socketfile, &props);
