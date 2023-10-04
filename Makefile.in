@@ -30,7 +30,7 @@ LIBS = -L./bin/libs \
 #CARGS_SO = -c -g -fpic $(INCLUDE)
 
 #GCC:
-CARGS1 = @DEFS@ -g -c -Wall -fpic $(INCLUDE)
+CARGS1 = @DEFS@ @WALL_FLAG@ -g -c -fpic $(INCLUDE)
 #Save preprocessor and assembly files 
 #CARGS1 = -g -c -Wall -fpic $(INCLUDE) -save-temps=obj
 CARGS2 = 

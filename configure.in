@@ -5,6 +5,7 @@ AC_PROG_CC()
 AC_PATH_TOOL([AR], [ar])
 AS_IF([test -z "$AR"], AC_MSG_ERROR([ar not found]))
 
+AS_IF([test "$(basename "$CC")" == "gcc"], AC_SUBST([WALL_FLAG], [-Wall]))
 AS_IF([test "$(basename "$CC")" == "xlc"], AC_SUBST([LFLAGS1_SO], [-G]), AC_SUBST([LFLAGS1_SO], [-shared]))
 
 AC_CHECK_HEADER([sys/stat.h], [AC_DEFINE([HAVE_SYS_STAT], [1])])
